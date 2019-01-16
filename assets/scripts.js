@@ -325,6 +325,7 @@ function onload() {
 		console.log(file);
 		console.log(fileUrl)
 		video_selector.src = fileUrl;
+		video_selector.play();
 		file_selector.style.display = 'none';
 		document.getElementById("wrapper-video").style.display = 'block';
 	}, false);
