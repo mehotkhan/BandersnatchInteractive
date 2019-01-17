@@ -243,3 +243,14 @@ h2 {
 ul.file-tips li {
     font-size: .45em;
 }
+.contact {
+    position: absolute;
+    bottom: 0;
+    background: #ffffff7a;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    padding: 37px;
+}
+.contact p {
+    font-size: 1em;
+}
