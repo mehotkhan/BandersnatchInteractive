@@ -195,17 +195,15 @@ video::-webkit-media-controls-panel {
 }
 
 .file-area .file-dummy {
-    width: 100%;
-    padding: 50px 30px;
     border: 2px dashed #ccc;
     background-color: #fff;
     text-align: center;
     transition: background 0.3s ease-in-out;
     margin: 0 auto;
-    width: 50%;
-    height: 25%;
+    width: 76%;
+    height: 70%;
     font-size: 2em;
-    padding: 9%;
+    padding: 8%;
 }
 
 .file-area .file-dummy .success {
@@ -239,7 +237,9 @@ ul.file-tips {
 }
 
 h2 {
-    margin-top: -15%;
-    margin-bottom: 12%;
-    font-size: 3em;
+
+
+}
+ul.file-tips li {
+    font-size: .45em;
 }
