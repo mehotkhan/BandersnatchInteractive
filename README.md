@@ -18,7 +18,7 @@ The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & d
 * Only english subtitle available, If you want add another language subtitle, tell me.
 * to going back your choice use `right` keyboard button
 * if you dont choose any item , right item selected
-# Persian user
+## Persian user
 * if you are persian user , read this : [پلیر تعاملی ( اینتراکتیو )‌ برای قسمت جدید بلک میرور]( http://vrgl.ir/YzhCn )
 
 ## Credit
