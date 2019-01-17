@@ -3,7 +3,7 @@ With this online(html) video player you can watch `Bandersnatch` episode of `Bla
 
 [Live demo](https://mehotkhan.github.io/BandersnatchInteractive/)
 
-## How yo use
+## How to use
 The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & drop the file in [this](https://mehotkhan.github.io/BandersnatchInteractive/) page and enjoy!
 
 ## Screenshot
