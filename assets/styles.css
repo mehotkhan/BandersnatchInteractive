@@ -249,7 +249,8 @@ ul.file-tips li {
     background: #ffffff7a;
     width: 100%;
     border-top: 1px solid #ddd;
-    padding: 37px;
+    padding: 1px;
+    z-index: 99999;
 }
 .contact p {
     font-size: 1em;
