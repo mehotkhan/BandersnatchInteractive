@@ -16,6 +16,8 @@ The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & d
 * Drag it on white box on [page](https://mehotkhan.github.io/BandersnatchInteractive/) :)
 * On full screen video choice don't show !!!
 * Only english subtitle available, If you want add another language subtitle, tell me.
+* to going back your choice use `right` keyboard button
+* if you dont choose any item , right item selected
 
 ## Credit
 * based on [joric work](https://github.com/joric/bandersnatch)
