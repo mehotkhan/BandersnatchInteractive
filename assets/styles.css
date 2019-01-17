@@ -51,11 +51,11 @@ li:first-child {
 }
 
 #progress {
-    background-color: #ff00007d;
+    background-color: #ff4949f7;
     width: 0%;
-    height: 29px;
+    height: 6px;
     margin: auto;
-    border-radius: 4px;
+    border-radius: 0;
     position: relative;
     top: 0;
     z-index: 999;
