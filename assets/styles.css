@@ -238,7 +238,9 @@ ul.controls-tips {
     text-align: left;
 }
 
-h2 {}
+h2 {
+    margin-top: 0;
+}
 
 ul.file-tips li,
 ul.controls-tips li {
