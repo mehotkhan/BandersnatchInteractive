@@ -7,8 +7,13 @@ With this online(html) video player you can watch `Bandersnatch` episode of `Bla
 The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & drop the file in [this](https://mehotkhan.github.io/BandersnatchInteractive/) page and enjoy!
 
 ## Screenshot
+  * full screen mode 
+  
+  ![Screenshot](screenshot/full-screen.png)
 
-  ![Screenshot](screenshot/option-example.png)
+* non full screen mode
+* 
+  ![Screenshot](screenshot/non-full-screen.png)
 ## Tips
 
 * Only work on google chrome (Doesn't work on Firefox; codec problems)
