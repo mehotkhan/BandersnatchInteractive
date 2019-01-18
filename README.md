@@ -21,6 +21,9 @@ The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & d
 * Drag it on white box on [page](https://mehotkhan.github.io/BandersnatchInteractive/) :)
 * Only english subtitle available, If you want add another language subtitle, tell me.
 * if you dont choose any item , right item selected
+
+## Donate
+*  my bitcoin wallet: `1CxaCJbh4VMNicnpktsBVfnVU5xq4QYyHW`
 ## Controls
 
 * <kbd>F</kbd> - Toggle fullscreen
