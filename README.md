@@ -16,8 +16,15 @@ The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & d
 * Drag it on white box on [page](https://mehotkhan.github.io/BandersnatchInteractive/) :)
 * On full screen video choice don't show !!!
 * Only english subtitle available, If you want add another language subtitle, tell me.
-* to going back your choice use `right` keyboard button
 * if you dont choose any item , right item selected
+## Controls
+
+* <kbd>F</kbd> - Toggle fullscreen
+* <kbd>R</kbd> - Restart video
+* <kbd>→</kbd> - Jump to the next segment (or to the next interaction zone)
+* <kbd>←</kbd> - Jump to the previous segment
+* <kbd>Space</kbd> - Toggle play and pause
+  
 ## Persian user
 * if you are persian user , read this : [پلیر تعاملی ( اینتراکتیو )‌ برای قسمت جدید بلک میرور]( http://vrgl.ir/YzhCn )
 
