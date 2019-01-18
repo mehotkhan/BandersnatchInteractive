@@ -204,7 +204,7 @@ video::-webkit-media-controls-panel {
     width: 76%;
     height: 70%;
     font-size: 2em;
-    padding: 8%;
+    padding: 4% 10%;
 }
 
 .file-area .file-dummy .success {
