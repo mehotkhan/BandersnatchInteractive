@@ -203,7 +203,7 @@ video::-webkit-media-controls-panel {
     margin: 0 auto;
     width: 76%;
     height: auto;
-    font-size: 2em;
+    font-size: 1.5em;
     padding: 4% 10%;
 }
 
@@ -225,6 +225,7 @@ video::-webkit-media-controls-panel {
 
 .file-area input[type=file]:valid+.file-dummy .default {
     display: inline-block;
+    font-size: 0.9em;
 }
 
 ul.file-tips,
@@ -240,6 +241,7 @@ ul.controls-tips {
 
 h2 {
     margin-top: 0;
+    font-size: 1em;
 }
 
 ul.file-tips li,
