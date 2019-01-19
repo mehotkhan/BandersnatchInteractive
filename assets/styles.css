@@ -202,7 +202,7 @@ video::-webkit-media-controls-panel {
     transition: background 0.3s ease-in-out;
     margin: 0 auto;
     width: 76%;
-    height: 70%;
+    height: auto;
     font-size: 2em;
     padding: 4% 10%;
 }
