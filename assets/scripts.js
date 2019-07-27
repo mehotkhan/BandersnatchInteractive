@@ -414,7 +414,7 @@ function applyPlaybackImpression(segmentId) {
 function playSegment(segmentId) {
 	clearTimeout(timerId);
 	if (!segmentId || typeof segmentId === "undefined")
-		segmentId = '1A';
+		segmentId = segmentMap.initialSegment;
 	console.log('playSegment', segmentId);
 	applyPlaybackImpression(segmentId);
 	location.hash = segmentId;
