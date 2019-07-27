@@ -82,11 +82,6 @@ function findSegment(id) {
 	return id;
 }
 
-function getChoiceMs(choiceId) {
-	var segmentId = findSegment(choiceId);
-	return getSegmentMs(segmentId);
-}
-
 function getSegmentId(ms) {
 	for (const [k, v] of Object.entries(segmentMap.segments)) {
 		if (ms >= v.startTimeMs && ms < v.endTimeMs) {
