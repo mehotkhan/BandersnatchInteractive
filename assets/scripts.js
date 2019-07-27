@@ -309,18 +309,24 @@ window.onload = function() {
 	var video_selector = document.getElementById("video");
 	var video_source_selector = document.getElementById("video-source");
 	var file_selector = document.getElementById("file-selector");
+	function startPlayback() {
+		file_selector.style.display = 'none';
+		playSegment(null);
+		video_selector.play();
+	}
 	if (video_source_selector.getAttribute("src") == '') {
 		console.log('no video');
 		file_selector.style.display = 'table';
 		document.getElementById("wrapper-video").style.display = 'none';
+	} else {
+		startPlayback();
 	}
 	document.getElementById('fileinput').addEventListener('change', function () {
 		var file = this.files[0];
 		var fileUrl = URL.createObjectURL(file);
 		video_selector.src = fileUrl;
-		video_selector.play();
-		file_selector.style.display = 'none';
 		document.getElementById("wrapper-video").style.display = 'block';
+		startPlayback();
 	}, false);
 
 	video_selector.ontimeupdate = ontimeupdate;
