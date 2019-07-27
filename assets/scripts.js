@@ -25,14 +25,14 @@ function generateJs(cond) {
 	} else if (cond[0] == 'not') {
 		return '!(' + generateJs(cond[1]) + ')';
 	} else if (cond[0] == 'and') {
-		var conds = [];
-		for (var i = 1; i < cond.length; i++) {
+		let conds = [];
+		for (let i = 1; i < cond.length; i++) {
 			conds.push('(' + generateJs(cond[i]) + ')');
 		}
 		return '(' + conds.join(' && ') + ')';
 	} else if (cond[0] == 'or') {
-		var conds = [];
-		for (var i = 1; i < cond.length; i++) {
+		let conds = [];
+		for (let i = 1; i < cond.length; i++) {
 			conds.push('(' + generateJs(cond[i]) + ')');
 		}
 		return '(' + conds.join(' || ') + ')';
@@ -61,13 +61,13 @@ function findSegment(id) {
 	if (id.startsWith('nsg-')) {
 		id = id.substr(4);
 	}
-	if (SegmentMap.segments[id]) {
+	if (segmentMap.segments[id]) {
 		// check precondition
 		return id;
 	}
 
 	if (segmentGroups[id]) {
-		for (v of segmentGroups[id]) {
+		for (let v of segmentGroups[id]) {
 			if (v.segmentGroup) {
 				return findSegment(v.segmentGroup);
 			} else if (v.segment) {
@@ -88,7 +88,7 @@ function getChoiceMs(choiceId) {
 }
 
 function getSegmentId(ms) {
-	for (const [k, v] of Object.entries(SegmentMap.segments)) {
+	for (const [k, v] of Object.entries(segmentMap.segments)) {
 		if (ms >= v.startTimeMs && ms < v.endTimeMs) {
 			return k;
 		}
@@ -102,7 +102,7 @@ function getSegmentMs(segmentId) {
 
 function getMoment(ms) {
 	for (const [k, v] of Object.entries(momentsBySegment)) {
-		for (r of v)
+		for (let r of v)
 			if (r.type == 'scene:cs_bs') {
 				if (ms >= r.startMs && ms < r.endMs) {
 					return r;
@@ -140,24 +140,24 @@ function setNextSegment(segmentId, comment) {
 
 function addZones(segmentId) {
 	var ul = newList("interactionZones");
-	var caption = 'currentSegment(' + segmentId + ')';
+	let caption = 'currentSegment(' + segmentId + ')';
 	addItem(ul, caption, 'javascript:playSegment("' + segmentId + '")');
 
 	var v = segmentMap.segments[segmentId];
 	if (v && v.ui && v.ui.interactionZones) {
 		var index = 0;
-		for (z of v.ui.interactionZones) {
+		for (var z of v.ui.interactionZones) {
 			var startMs = z[0];
 			var stopMs = z[1];
-			var caption = segmentId + ' interactionZone ' + index;
+			let caption = segmentId + ' interactionZone ' + index;
 			addItem(ul, caption, 'javascript:seek(' + startMs + ')');
 			index++;
 		}
 	}
 
-	var ul = newList("nextSegments");
+	ul = newList("nextSegments");
 	for (const [k, v] of Object.entries(segmentMap.segments[segmentId].next)) {
-		var caption = captions[k] ? captions[k] : k;
+		let caption = captions[k] ? captions[k] : k;
 		if (segmentMap.segments[segmentId].defaultNext == k) {
 			caption = '[' + caption + ']';
 			setNextSegment(k);
@@ -170,9 +170,9 @@ function addChoices(r) {
 	var ul = newList("choices");
 	document.getElementById("choiceCaption").innerHTML = '';
 	if (!r) return;
-	index = 0;
+	let index = 0;
 
-	for (x of r.choices) {
+	for (let x of r.choices) {
 		console.log(x.id, 'choice saved');
 		globalChoices[x.id] = x;
 
@@ -247,14 +247,14 @@ function ontimeupdate(evt) {
 	}
 }
 
-function jumpForward(ms) {
+function jumpForward() {
 	var ms = getCurrentMs();
 	var segmentId = getSegmentId(ms);
 	var v = segmentMap.segments[segmentId];
 
 	var interactionMs = 0;
 	if (v && v.ui && v.ui.interactionZones) {
-		for (z of v.ui.interactionZones) {
+		for (var z of v.ui.interactionZones) {
 			var startMs = z[0];
 			var stopMs = z[1];
 			if (ms < startMs)
@@ -315,13 +315,13 @@ function onload() {
 	var video_source_selector = document.getElementById("video-source");
 	var file_selector = document.getElementById("file-selector");
 	if (video_source_selector.getAttribute("src") == '') {
-		console.log('no video')
+		console.log('no video');
 		file_selector.style.display = 'table';
 		document.getElementById("wrapper-video").style.display = 'none';
 	}
 	document.getElementById('fileinput').addEventListener('change', function () {
 		var file = this.files[0];
-		var fileUrl =  URL.createObjectURL(file)
+		var fileUrl = URL.createObjectURL(file);
 		video_selector.src = fileUrl;
 		video_selector.play();
 		file_selector.style.display = 'none';
@@ -347,7 +347,7 @@ function onload() {
 			playSegment(0);
 		if (e.code == 'Space')
 			togglePlayPause();
-	}
+	};
 
 	document.onkeydown = function (evt) {
 		var v = document.getElementById("video");
@@ -359,14 +359,13 @@ function onload() {
 		if (evt.key == 'ArrowRight') {
 			jumpForward();
 		}
-	}
+	};
 
 	if (location.hash) {
 		var segmentId = location.hash.slice(1);
 		playSegment(segmentId);
 	}
-
-}
+};
 
 function seek(ms) {
 	clearTimeout(timerId);
@@ -389,7 +388,7 @@ function applyImpression(obj) {
 		return;
 	}
 
-	impressionData = obj.impressionData;
+	var impressionData = obj.impressionData;
 
 	if (impressionData && impressionData.type == 'userState') {
 		for (const [variable, value] of Object.entries(impressionData.data.persistent)) {
@@ -407,7 +406,7 @@ function applyPlaybackImpression(segmentId) {
 		return;
 	}
 
-	for (moment of moments) {
+	for (let moment of moments) {
 		if (moment.type != 'notification:playbackImpression') {
 			continue;
 		}
