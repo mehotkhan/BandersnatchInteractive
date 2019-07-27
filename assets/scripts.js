@@ -413,7 +413,7 @@ function applyPlaybackImpression(segmentId) {
 
 function playSegment(segmentId) {
 	clearTimeout(timerId);
-	if (!segmentId || segmentId == "undefined")
+	if (!segmentId || typeof segmentId === "undefined")
 		segmentId = '1A';
 	console.log('playSegment', segmentId);
 	applyPlaybackImpression(segmentId);
