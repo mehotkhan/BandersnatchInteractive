@@ -336,6 +336,8 @@ window.onload = function() {
 	};
 
 	document.onkeypress = function (e) {
+		if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
+			return;
 		if (e.code == 'KeyF')
 			toggleFullScreen();
 		if (e.code == 'KeyR')
@@ -344,14 +346,13 @@ window.onload = function() {
 			togglePlayPause();
 	};
 
-	document.onkeydown = function (evt) {
-		var v = document.getElementById("video");
-
-		if (evt.key == 'ArrowLeft') {
+	document.onkeydown = function (e) {
+		if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
+			return;
+		if (e.key == 'ArrowLeft') {
 			jumpBack();
 		}
-
-		if (evt.key == 'ArrowRight') {
+		if (e.key == 'ArrowRight') {
 			jumpForward();
 		}
 	};
