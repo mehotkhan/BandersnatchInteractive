@@ -1,13 +1,15 @@
+// Data
 var segmentMap = SegmentMap;
 var bv = bandersnatch.videos['80988062'].interactiveVideoMoments.value;
 var choicePoints = bv.choicePointNavigatorMetadata.choicePointsMetadata.choicePoints;
 var momentsBySegment = bv.momentsBySegment;
 var segmentGroups = bv.segmentGroups;
+
+// Global mutable state
 var captions = {};
 var currentSegment;
-var currentMoment;
 var nextSegment = null;
-var momentSelected = null;
+var currentMoments = [];
 var persistentState = bv.stateHistory;
 var globalChoices = {};
 
@@ -82,6 +84,8 @@ function findSegment(id) {
 	return id;
 }
 
+/// Returns the segment ID at the given timestamp.
+/// There will be exactly one segment for any timestamp within the video file.
 function getSegmentId(ms) {
 	for (const [k, v] of Object.entries(segmentMap.segments)) {
 		if (ms >= v.startTimeMs && ms < v.endTimeMs) {
@@ -95,16 +99,16 @@ function getSegmentMs(segmentId) {
 	return segmentMap.segments[segmentId].startTimeMs;
 }
 
-function getMoment(ms) {
-	for (const [k, v] of Object.entries(momentsBySegment)) {
-		for (let r of v)
-			if (r.type == 'scene:cs_bs') {
-				if (ms >= r.startMs && ms < r.endMs) {
-					return r;
-				}
-			}
+function getMoments(segmentId, ms) {
+	let result = {};
+	let moments = momentsBySegment[segmentId] || [];
+	for (let i = 0; i < moments.length; i++) {
+		let m = moments[i];
+		if (ms >= m.startMs && ms < m.endMs) {
+			result[segmentId + '-' + i] = m;
+		}
 	}
-	return null;
+	return result;
 }
 
 function newList(id) {
@@ -180,66 +184,75 @@ function addChoices(r) {
 	document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
 }
 
-
-function updateProgressBar(ms, r) {
-	var p = 0;
-
-	if (r && ms > r.startMs && ms < r.endMs) {
-		p = 100 - Math.floor((ms - r.startMs) * 100 / (r.endMs - r.startMs));
+function momentStart(m) {
+	console.log('momentStart', m);
+	if (m.type == 'scene:cs_bs') {
+		addZones(currentSegment);
+		addChoices(m);
 	}
+	applyImpression(m.impressionData);
+}
 
-	document.getElementById("progress").style.width = p + '%';
+function momentUpdate(m, ms) {
+	//console.log('momentUpdate', m);
+	if (m.type == 'scene:cs_bs') {
+		var p = 100 - Math.floor((ms - m.startMs) * 100 / (m.endMs - m.startMs));
+		document.getElementById("progress").style.width = p + '%';
+	}
+}
+
+function momentEnd(m) {
+	console.log('momentEnd', m);
+	if (m.type == 'scene:cs_bs') {
+		setNextSegment(null);
+		addZones(currentSegment);
+		addChoices(0);
+		document.getElementById("progress").style.width = 0;
+	}
 }
 
 var timerId = 0;
-
-var switchFrom = null;
-var switchTo = null;
-
-function ontimeout(nextSegment) {
-	console.log('ontimeout', nextSegment);
-
-	if (switchFrom != currentSegment || switchTo != nextSegment) {
-		playSegment(nextSegment);
-	}
-
-	switchFrom = currentSegment;
-	switchTo = nextSegment;
-}
 
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
 
 	var segmentId = getSegmentId(ms);
 
-	// ontimeupdate resolution is about a second, better use timer
-	clearTimeout(timerId);
+	// ontimeupdate resolution is about a second. Augment it using timer.
+	if (timerId) {
+		clearTimeout(timerId);
+		timerId = 0;
+	}
 	if (segmentId && nextSegment && nextSegment != segmentId) {
-		var timeLeft = SegmentMap.segments[segmentId].endTimeMs - ms;
-		timerId = setTimeout(ontimeout, timeLeft, nextSegment);
+		var timeLeft = segmentMap.segments[segmentId].endTimeMs - ms;
+		timerId = setTimeout(ontimeupdate, timeLeft);
 	}
 
 	if (currentSegment != segmentId) {
 		console.log('ontimeupdate', currentSegment, segmentId, ms, msToString(ms));
-		currentSegment = segmentId;
-		addZones(segmentId);
-		currentMoment = null;
-		addChoices(0);
+		// Distinguish between the user seeking manually with <video> controls,
+		// from the video playing past the current segment end.
+		if (ms > segmentMap.segments[currentSegment].endTimeMs &&
+			ms < segmentMap.segments[currentSegment].endTimeMs + 2000) {
+			// TODO: activate and apply user choice (whether or not it
+			// was default) instead of just playing the next segment.
+			playSegment(nextSegment, true);
+		} else {
+			playSegment(segmentId, true);
+		}
 	}
 
-	var r = getMoment(ms);
-	if (r && momentSelected != r.id) {
-		updateProgressBar(ms, r);
-		if (currentMoment != r.id) {
-			currentMoment = r.id;
-			console.log('interaction', currentMoment);
-			addChoices(r);
-		}
-	} else {
-		currentMoment = null;
-		addChoices(0);
-		updateProgressBar(0);
-	}
+	var moments = getMoments(segmentId, ms);
+	for (let k in currentMoments)
+		if (!(k in moments))
+			momentEnd(currentMoments[k]);
+	for (let k in currentMoments)
+		if (k in moments)
+			momentUpdate(currentMoments[k], ms);
+	for (let k in moments)
+		if (!(k in currentMoments))
+			momentStart(moments[k]);
+	currentMoments = moments;
 }
 
 function jumpForward() {
@@ -379,19 +392,13 @@ function seek(ms) {
 function choice(choiceId, text, id) {
 	var segmentId = findSegment(choiceId);
 	console.log('choice', choiceId, 'nextSegment', segmentId);
-	applyImpression(globalChoices[id]);
+	applyImpression(globalChoices[id].impressionData);
 	setNextSegment(segmentId, text);
 	momentSelected = choiceId;
 	addChoices(0);
 }
 
-function applyImpression(obj) {
-	if (!obj) {
-		return;
-	}
-
-	var impressionData = obj.impressionData;
-
+function applyImpression(impressionData) {
 	if (impressionData && impressionData.type == 'userState') {
 		for (const [variable, value] of Object.entries(impressionData.data.persistent)) {
 			console.log('persistentState set', variable, '=', value);
@@ -400,31 +407,16 @@ function applyImpression(obj) {
 	}
 }
 
-function applyPlaybackImpression(segmentId) {
-	let moments = momentsBySegment[segmentId];
-
-	if (!moments) {
-		console.log('warning - no moments');
-		return;
-	}
-
-	for (let moment of moments) {
-		if (moment.type != 'notification:playbackImpression') {
-			continue;
-		}
-
-		applyImpression(moment);
-	}
-}
-
-function playSegment(segmentId) {
-	clearTimeout(timerId);
+function playSegment(segmentId, noSeek) {
 	if (!segmentId || typeof segmentId === "undefined")
 		segmentId = segmentMap.initialSegment;
-	console.log('playSegment', segmentId);
-	applyPlaybackImpression(segmentId);
-	location.hash = segmentId;
+	console.log('playSegment', currentSegment, '->', segmentId);
 	document.title = 'Bandersnatch - Chapter ' + segmentId;
-	var ms = getSegmentMs(segmentId);
-	seek(ms);
+	var oldSegment = getSegmentId(getCurrentMs());
+	currentSegment = segmentId;
+	location.hash = segmentId;
+	if (!noSeek || oldSegment != segmentId) {
+		var ms = getSegmentMs(segmentId);
+		seek(ms);
+	}
 }
