@@ -305,7 +305,7 @@ function togglePlayPause() {
 	else v.pause();
 }
 
-function onload() {
+window.onload = function() {
 	var video_selector = document.getElementById("video");
 	var video_source_selector = document.getElementById("video-source");
 	var file_selector = document.getElementById("file-selector");
