@@ -382,9 +382,11 @@ window.onload = function() {
 		}
 	};
 
-	if (location.hash) {
-		var segmentId = location.hash.slice(1);
-		playSegment(segmentId);
+	window.onhashchange = function() {
+		playHash(window.location.hash);
+	};
+	if (window.location.hash) {
+		playHash(window.location.hash);
 	}
 };
 
@@ -425,5 +427,16 @@ function playSegment(segmentId, noSeek) {
 	if (!noSeek || oldSegment != segmentId) {
 		var ms = getSegmentMs(segmentId);
 		seek(ms);
+	}
+}
+
+function playHash(hash) {
+	if (hash) {
+		let loc = hash.slice(1).split('/');
+		let segmentId = loc[0];
+		if (loc.length > 1)
+			seek(momentsBySegment[segmentId][loc[1]].startMs);
+		else
+			seek(getSegmentMs(segmentId));
 	}
 }
