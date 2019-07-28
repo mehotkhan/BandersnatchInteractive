@@ -123,11 +123,13 @@ function addItem(ul, text, url) {
 	ul.appendChild(li);
 }
 
+var nextChoice = -1;
 var nextSegment = null;
 
 function setNextSegment(segmentId, comment) {
 	console.log('setNextSegment', segmentId, comment);
 	nextSegment = segmentId;
+	nextChoice = -1;
 	var ul = newList("nextSegment");
 	var caption = 'nextSegment: ' + segmentId;
 	addItem(ul, comment ? caption + ' (' + comment + ')' : caption,
@@ -152,31 +154,34 @@ function addZones(segmentId) {
 	}
 
 	ul = newList("nextSegments");
+	let defaultSegmentId = null;
 	for (const [k, v] of Object.entries(segmentMap.segments[segmentId].next)) {
 		let caption = k;
 		if (segmentMap.segments[segmentId].defaultNext == k) {
 			caption = '[' + caption + ']';
-			setNextSegment(k);
+			defaultSegmentId = k;
 		}
 		addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 	}
+	setNextSegment(defaultSegmentId);
 }
 
-var globalChoices = {};
+var currentChoices = [];
 
 function addChoices(r) {
+	currentChoices = [];
+	nextChoice = -1;
 	var ul = newList("choices");
 	document.getElementById("choiceCaption").innerHTML = '';
 	if (!r) return;
+
+	currentChoices = r.choices;
+	nextChoice = r.defaultChoiceIndex;
+
 	let index = 0;
-
 	for (let x of r.choices) {
-		console.log(x.id, 'choice saved');
-		globalChoices[x.id] = x;
-
 		var caption = r.defaultChoiceIndex == index ? '[' + x.text + ']' : x.text;
-		addItem(ul, caption, 'javascript:choice("' +
-			(x.segmentId ? x.segmentId : (x.sg ? x.sg : x.id)) + '", "' + x.text + '", "' + x.id + '")');
+		addItem(ul, caption, 'javascript:choice(' + index + ')');
 		index++;
 	}
 
@@ -239,10 +244,7 @@ function ontimeupdate(evt) {
 		console.log('ontimeupdate', lastSegment, '->', currentSegment, ms, msToString(ms), seeked);
 		lastSegment = currentSegment;
 		if (!seeked) {
-			// TODO: activate and apply user choice (whether or not it
-			// was default) instead of just playing the next segment.
-			segmentTransition = true;
-			if (playSegment(nextSegment, true)) {
+			if (playNextSegment()) {
 				// playSegment decided to seek, which means that this
 				// currentSegment is invalid, and a recursive
 				// ontimeupdate invocation should have taken care of
@@ -250,7 +252,6 @@ function ontimeupdate(evt) {
 				return;
 			}
 		}
-		setNextSegment(null);
 		addZones(currentSegment);
 		placeChanged = true;
 	}
@@ -319,6 +320,22 @@ function ontimeupdate(evt) {
 		timerId = setTimeout(ontimeupdate, timeLeft);
 }
 
+function playNextSegment() {
+	if (nextChoice >= 0) {
+		let x = currentChoices[nextChoice];
+		let choiceId = x.segmentId ? x.segmentId : (x.sg ? x.sg : x.id);
+		var segmentId = findSegment(choiceId);
+		console.log('choice', choiceId, 'nextSegment', segmentId);
+		applyImpression(x.impressionData);
+		nextSegment = segmentId;
+	}
+
+	segmentTransition = true;
+	let segment = nextSegment;
+	nextSegment = null;
+	return playSegment(segment, true);
+}
+
 function jumpForward() {
 	var ms = getCurrentMs();
 	var segmentId = getSegmentId(ms);
@@ -333,7 +350,7 @@ function jumpForward() {
 	if (interactionMs) {
 		seek(interactionMs);
 	} else {
-		playSegment(nextSegment);
+		playNextSegment();
 	}
 }
 
@@ -450,20 +467,14 @@ window.onload = function() {
 };
 
 function seek(ms) {
-	clearTimeout(timerId);
 	console.log('seek', ms);
-	momentSelected = null;
 	document.getElementById("video").currentTime = ms / 1000.0;
 	ontimeupdate(null);
 }
 
-function choice(choiceId, text, id) {
-	var segmentId = findSegment(choiceId);
-	console.log('choice', choiceId, 'nextSegment', segmentId);
-	applyImpression(globalChoices[id].impressionData);
-	setNextSegment(segmentId, text);
-	momentSelected = choiceId;
-	addChoices(0);
+function choice(choiceIndex) {
+	nextChoice = choiceIndex;
+	newList("choices");
 }
 
 function applyImpression(impressionData) {
