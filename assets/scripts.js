@@ -21,21 +21,21 @@ function getCurrentMs() {
 	return Math.round(document.getElementById("video").currentTime * 1000.0);
 }
 
-function generateJs(cond) {
+function preconditionToJS(cond) {
 	if (cond[0] == 'persistentState') {
 		return '!!persistentState["' + cond[1] + '"]';
 	} else if (cond[0] == 'not') {
-		return '!(' + generateJs(cond[1]) + ')';
+		return '!(' + preconditionToJS(cond[1]) + ')';
 	} else if (cond[0] == 'and') {
 		let conds = [];
 		for (let i = 1; i < cond.length; i++) {
-			conds.push('(' + generateJs(cond[i]) + ')');
+			conds.push('(' + preconditionToJS(cond[i]) + ')');
 		}
 		return '(' + conds.join(' && ') + ')';
 	} else if (cond[0] == 'or') {
 		let conds = [];
 		for (let i = 1; i < cond.length; i++) {
-			conds.push('(' + generateJs(cond[i]) + ')');
+			conds.push('(' + preconditionToJS(cond[i]) + ')');
 		}
 		return '(' + conds.join(' || ') + ')';
 	} else {
@@ -48,7 +48,7 @@ function checkPrecondition(segmentId) {
 	let precondition = bv.preconditions[segmentId];
 
 	if (precondition) {
-		let cond = generateJs(precondition);
+		let cond = preconditionToJS(precondition);
 		let match = eval(cond);
 
 		console.log(cond, '==', match);
