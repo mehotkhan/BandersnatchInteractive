@@ -329,6 +329,10 @@ function playNextSegment() {
 		nextSegment = segmentId;
 	}
 
+	let breadcrumb = 'breadcrumb_' + nextSegment;
+	if (!(breadcrumb in ls))
+		ls[breadcrumb] = lastSegment;
+
 	segmentTransition = true;
 	let segment = nextSegment;
 	nextSegment = null;
@@ -341,7 +345,7 @@ function jumpForward() {
 
 	var interactionMs = 0;
 	let moments = momentsBySegment[segmentId] || [];
-	// Find the earliest moment within this segment
+	// Find the earliest moment within this segment after cursor
 	for (let m of moments)
 		if (m.startMs >= ms && (interactionMs == 0 || m.startMs < interactionMs))
 			interactionMs = m.startMs;
@@ -356,10 +360,40 @@ function jumpForward() {
 function jumpBack() {
 	var ms = getCurrentMs();
 	var segmentId = getSegmentId(ms);
-	var startMs = getSegmentMs(segmentId);
-	var previousSegment = getSegmentId(startMs - 1000);
-	console.log('jumpBack from-to', segmentId, previousSegment);
-	playSegment(previousSegment);
+	let segment = segmentMap.segments[segmentId];
+
+	var interactionMs = 0;
+	let moments = momentsBySegment[segmentId] || [];
+	let inMoment = false;
+	// Find the latest moment within this segment before cursor
+	for (let m of moments) {
+		if (m.endMs < ms && m.startMs > interactionMs)
+			interactionMs = m.startMs;
+		if (m.startMs != segment.startTimeMs && m.startMs <= ms && ms < m.endMs)
+			inMoment = true;
+	}
+
+	if (interactionMs) {
+		seek(interactionMs);
+	} else if (inMoment) {
+		seek(segment.startTimeMs);
+	} else {
+		let breadcrumb = 'breadcrumb_' + segmentId;
+		if (breadcrumb in ls) {
+			// Jump to last moment in previous segment
+			segmentId = ls[breadcrumb];
+			segment = segmentMap.segments[segmentId];
+
+			interactionMs = segment.startTimeMs;
+			let moments = momentsBySegment[segmentId] || [];
+			for (let m of moments)
+				if (m.startMs > interactionMs)
+					interactionMs = m.startMs;
+			seek(interactionMs);
+		} else {
+			seek(0);
+		}
+	}
 }
 
 function toggleFullScreen() {
