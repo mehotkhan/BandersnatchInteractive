@@ -5,13 +5,6 @@ var choicePoints = bv.choicePointNavigatorMetadata.choicePointsMetadata.choicePo
 var momentsBySegment = bv.momentsBySegment;
 var segmentGroups = bv.segmentGroups;
 
-// Global mutable state
-var captions = {};
-var currentSegment;
-var nextSegment = null;
-var currentMoments = [];
-var globalChoices = {};
-
 // Persistent state
 var ls = window.localStorage || {};
 
@@ -130,6 +123,8 @@ function addItem(ul, text, url) {
 	ul.appendChild(li);
 }
 
+var nextSegment = null;
+
 function setNextSegment(segmentId, comment) {
 	console.log('setNextSegment', segmentId, comment);
 	nextSegment = segmentId;
@@ -158,7 +153,7 @@ function addZones(segmentId) {
 
 	ul = newList("nextSegments");
 	for (const [k, v] of Object.entries(segmentMap.segments[segmentId].next)) {
-		let caption = captions[k] ? captions[k] : k;
+		let caption = k;
 		if (segmentMap.segments[segmentId].defaultNext == k) {
 			caption = '[' + caption + ']';
 			setNextSegment(k);
@@ -166,6 +161,8 @@ function addZones(segmentId) {
 		addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 	}
 }
+
+var globalChoices = {};
 
 function addChoices(r) {
 	var ul = newList("choices");
@@ -214,8 +211,10 @@ function momentEnd(m, seeked) {
 
 var timerId = 0;
 var lastMs = 0;
+var currentSegment;
 var lastSegment = null;
 var segmentTransition = false;
+var lastMoments = [];
 
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
@@ -264,27 +263,27 @@ function ontimeupdate(evt) {
 	var naturalTransition = !seeked || segmentTransition;
 	segmentTransition = false;
 
-	var moments = getMoments(currentSegment, ms);
-	for (let k in currentMoments)
-		if (!(k in moments)) {
-			momentEnd(currentMoments[k], !naturalTransition);
-			placeChanged = true;
-		}
-	for (let k in currentMoments)
-		if (k in moments)
-			momentUpdate(currentMoments[k], ms);
-	for (let k in moments)
+	var currentMoments = getMoments(currentSegment, ms);
+	for (let k in lastMoments)
 		if (!(k in currentMoments)) {
-			momentStart(moments[k], !naturalTransition);
+			momentEnd(lastMoments[k], !naturalTransition);
 			placeChanged = true;
 		}
-	currentMoments = moments;
+	for (let k in lastMoments)
+		if (k in currentMoments)
+			momentUpdate(lastMoments[k], ms);
+	for (let k in currentMoments)
+		if (!(k in lastMoments)) {
+			momentStart(currentMoments[k], !naturalTransition);
+			placeChanged = true;
+		}
+	lastMoments = currentMoments;
 
 	if (placeChanged) {
 		let title = 'Bandersnatch';
 		title += ' - Chapter ' + currentSegment;
-		for (let k in moments) {
-			let m = moments[k];
+		for (let k in currentMoments) {
+			let m = currentMoments[k];
 			if (m.type.substr(0, 6) == 'scene:') {
 				if (m.id && m.id in choicePoints && choicePoints[m.id].description)
 					title += ' - Choice "' + choicePoints[m.id].description + '"';
@@ -297,8 +296,8 @@ function ontimeupdate(evt) {
 		let hash = currentSegment;
 		// Pick the moment which starts closer to the current timestamp.
 		let bestMomentStart = segmentMap.segments[currentSegment].startTimeMs;
-		for (let k in moments) {
-			let m = moments[k];
+		for (let k in currentMoments) {
+			let m = currentMoments[k];
 			if (m.startMs > bestMomentStart) {
 				hash = k;
 				bestMomentStart = m.startMs;
