@@ -247,6 +247,7 @@ var timerId = 0;
 var lastMs = 0;
 var currentSegment;
 var lastSegment = null;
+var prevSegment = null; // for breadcrumbs
 var segmentTransition = false;
 var lastMoments = [];
 
@@ -272,6 +273,7 @@ function ontimeupdate(evt) {
 	// Handle segment change
 	if (lastSegment != currentSegment) {
 		console.log('ontimeupdate', lastSegment, '->', currentSegment, ms, msToString(ms), seeked);
+		prevSegment = lastSegment;
 		lastSegment = currentSegment;
 		if (!seeked) {
 			if (playNextSegment()) {
@@ -365,7 +367,7 @@ function playNextSegment() {
 
 	let breadcrumb = 'breadcrumb_' + nextSegment;
 	if (!(breadcrumb in ls))
-		ls[breadcrumb] = lastSegment;
+		ls[breadcrumb] = prevSegment;
 
 	segmentTransition = true;
 	let segmentId = nextSegment;
