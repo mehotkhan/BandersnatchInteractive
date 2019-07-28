@@ -187,8 +187,7 @@ function addChoices(r) {
 
 function momentStart(m, seeked) {
 	console.log('momentStart', m, seeked);
-	if (m.type == 'scene:cs_bs') {
-		addZones(currentSegment);
+	if (m.choices) {
 		addChoices(m);
 	}
 	if (!seeked)
@@ -197,7 +196,7 @@ function momentStart(m, seeked) {
 
 function momentUpdate(m, ms) {
 	//console.log('momentUpdate', m);
-	if (m.type == 'scene:cs_bs') {
+	if (m.choices) {
 		var p = 100 - Math.floor((ms - m.startMs) * 100 / (m.endMs - m.startMs));
 		document.getElementById("progress").style.width = p + '%';
 	}
@@ -205,9 +204,7 @@ function momentUpdate(m, ms) {
 
 function momentEnd(m, seeked) {
 	console.log('momentEnd', m, seeked);
-	if (m.type == 'scene:cs_bs') {
-		setNextSegment(null);
-		addZones(currentSegment);
+	if (m.choices) {
 		addChoices(0);
 		document.getElementById("progress").style.width = 0;
 	}
