@@ -34,6 +34,11 @@ var segmentGroups = bv.segmentGroups;
 
 // Persistent state
 var ls = window.localStorage || {};
+if (!('initialized' in ls)) {
+	for (let k in bv.stateHistory)
+		ls["persistentState_" + k] = JSON.stringify(bv.stateHistory[k]);
+	ls['initialized'] = 't';
+}
 
 function msToString(ms) {
 	return new Date(ms).toUTCString().split(' ')[4];
