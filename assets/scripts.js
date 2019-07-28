@@ -398,12 +398,9 @@ window.onload = function() {
 
 	var c = document.getElementById("c");
 	c.ondblclick = toggleFullScreen;
-	c.onclick = function () {
-		// can't togglePlayPause here, choice buttons stop the video
-		// should use preventdefault or something
-		// use spacebar for now
-		// mind that autoplay is disabled in latest chrome, so play after click
-		document.getElementById("video").play();
+	video_selector.onclick = function (e) {
+		togglePlayPause();
+		e.preventDefault();
 	};
 
 	document.onkeypress = function (e) {
