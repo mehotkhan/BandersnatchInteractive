@@ -560,8 +560,9 @@ function choice(choiceIndex) {
 function applyImpression(impressionData) {
 	if (impressionData && impressionData.type == 'userState') {
 		for (const [variable, value] of Object.entries(impressionData.data.persistent)) {
-			console.log('persistentState set', variable, '=', value);
-			ls["persistentState_" + variable] = JSON.stringify(value);
+			let key = "persistentState_" + variable;
+			console.log('persistentState set', variable, '=', value, '(was', key in ls ? ls[key] : 'unset', ')');
+			ls[key] = JSON.stringify(value);
 		}
 	}
 }
