@@ -39,14 +39,14 @@ function preconditionToJS(cond) {
 	}
 }
 
-function checkPrecondition(segmentId) {
-	let precondition = bv.preconditions[segmentId];
+function checkPrecondition(preconditionId) {
+	let precondition = bv.preconditions[preconditionId];
 
 	if (precondition) {
 		let cond = preconditionToJS(precondition);
 		let match = eval(cond);
 
-		console.log(cond, '==', match);
+		console.log(preconditionId, ':', cond, '==', match);
 
 		return match;
 	}
@@ -54,29 +54,29 @@ function checkPrecondition(segmentId) {
 	return true;
 }
 
-function findSegment(id) {
-	if (id.startsWith('nsg-')) {
-		id = id.substr(4);
-	}
-	if (segmentMap.segments[id]) {
-		// check precondition
-		return id;
-	}
-
-	if (segmentGroups[id]) {
-		for (let v of segmentGroups[id]) {
-			if (v.segmentGroup) {
-				return findSegment(v.segmentGroup);
-			} else if (v.segment) {
-				// check precondition
-				return v.segment;
-			} else {
-				if (checkPrecondition(v))
-					return v;
-			}
+function resolveSegmentGroup(sg) {
+	let results = [];
+	for (let v of segmentGroups[sg]) {
+		if (v.precondition) {
+			if (!checkPrecondition(v.precondition))
+				continue;
+		}
+		if (v.segmentGroup) {
+			results.push(resolveSegmentGroup(v.segmentGroup));
+		} else if (v.segment) {
+			// TODO: does the included precondition override or
+			// complement the segment precondition?
+			if (!checkPrecondition(v.segment))
+				continue;
+			results.push(v.segment);
+		} else {
+			if (!checkPrecondition(v))
+				continue;
+			results.push(v);
 		}
 	}
-	return id;
+	console.log('segment group', sg, '=>', results);
+	return results[0];
 }
 
 /// Returns the segment ID at the given timestamp.
@@ -322,11 +322,14 @@ function ontimeupdate(evt) {
 function playNextSegment() {
 	if (nextChoice >= 0) {
 		let x = currentChoiceMoment.choices[nextChoice];
-		let choiceId = x.segmentId ? x.segmentId : (x.sg ? x.sg : x.id);
-		var segmentId = findSegment(choiceId);
-		console.log('choice', choiceId, 'nextSegment', segmentId);
+		if (x.segmentId)
+			nextSegment = x.segmentId;
+		else if (x.sg)
+			nextSegment = resolveSegmentGroup(x.sg);
+		else
+			nextSegment = null;
+		console.log('choice', nextChoice, 'nextSegment', nextSegment);
 		applyImpression(x.impressionData);
-		nextSegment = segmentId;
 	}
 
 	let breadcrumb = 'breadcrumb_' + nextSegment;
@@ -336,7 +339,9 @@ function playNextSegment() {
 	segmentTransition = true;
 	let segment = nextSegment;
 	nextSegment = null;
-	return playSegment(segment, true);
+	if (segment)
+		return playSegment(segment, true);
+	return false;
 }
 
 function jumpForward() {
