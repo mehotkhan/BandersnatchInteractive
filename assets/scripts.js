@@ -185,13 +185,14 @@ function addChoices(r) {
 		document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
 }
 
-function momentStart(m) {
-	console.log('momentStart', m);
+function momentStart(m, seeked) {
+	console.log('momentStart', m, seeked);
 	if (m.type == 'scene:cs_bs') {
 		addZones(currentSegment);
 		addChoices(m);
 	}
-	applyImpression(m.impressionData);
+	if (!seeked)
+		applyImpression(m.impressionData);
 }
 
 function momentUpdate(m, ms) {
@@ -202,8 +203,8 @@ function momentUpdate(m, ms) {
 	}
 }
 
-function momentEnd(m) {
-	console.log('momentEnd', m);
+function momentEnd(m, seeked) {
+	console.log('momentEnd', m, seeked);
 	if (m.type == 'scene:cs_bs') {
 		setNextSegment(null);
 		addZones(currentSegment);
@@ -213,6 +214,7 @@ function momentEnd(m) {
 }
 
 var timerId = 0;
+var lastMs = 0;
 
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
@@ -229,30 +231,33 @@ function ontimeupdate(evt) {
 		timerId = setTimeout(ontimeupdate, timeLeft);
 	}
 
+	// Distinguish between the user seeking manually with <video> controls,
+	// and the video playing normally (past some timestamp / boundary).
+	let timeElapsed = ms - lastMs;
+	let seeked = timeElapsed >= 0 && timeElapsed < 2000;
+	lastMs = ms;
+
 	if (currentSegment != segmentId) {
 		console.log('ontimeupdate', currentSegment, segmentId, ms, msToString(ms));
-		// Distinguish between the user seeking manually with <video> controls,
-		// from the video playing past the current segment end.
-		if (ms > segmentMap.segments[currentSegment].endTimeMs &&
-			ms < segmentMap.segments[currentSegment].endTimeMs + 2000) {
+		if (seeked) {
+			playSegment(segmentId, true);
+		} else {
 			// TODO: activate and apply user choice (whether or not it
 			// was default) instead of just playing the next segment.
 			playSegment(nextSegment, true);
-		} else {
-			playSegment(segmentId, true);
 		}
 	}
 
 	var moments = getMoments(segmentId, ms);
 	for (let k in currentMoments)
 		if (!(k in moments))
-			momentEnd(currentMoments[k]);
+			momentEnd(currentMoments[k], seeked);
 	for (let k in currentMoments)
 		if (k in moments)
 			momentUpdate(currentMoments[k], ms);
 	for (let k in moments)
 		if (!(k in currentMoments))
-			momentStart(moments[k]);
+			momentStart(moments[k], seeked);
 	currentMoments = moments;
 }
 
@@ -387,6 +392,7 @@ function seek(ms) {
 	clearTimeout(timerId);
 	console.log('seek', ms);
 	momentSelected = null;
+	lastMs = ms;
 	document.getElementById("video").currentTime = ms / 1000.0;
 }
 
