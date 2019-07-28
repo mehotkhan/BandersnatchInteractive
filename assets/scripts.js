@@ -22,17 +22,9 @@ function preconditionToJS(cond) {
 	} else if (cond[0] == 'not') {
 		return '!(' + preconditionToJS(cond[1]) + ')';
 	} else if (cond[0] == 'and') {
-		let conds = [];
-		for (let i = 1; i < cond.length; i++) {
-			conds.push('(' + preconditionToJS(cond[i]) + ')');
-		}
-		return '(' + conds.join(' && ') + ')';
+		return '(' + cond.slice(1).map(preconditionToJS).join(' && ') + ')';
 	} else if (cond[0] == 'or') {
-		let conds = [];
-		for (let i = 1; i < cond.length; i++) {
-			conds.push('(' + preconditionToJS(cond[i]) + ')');
-		}
-		return '(' + conds.join(' || ') + ')';
+		return '(' + cond.slice(1).map(preconditionToJS).join(' || ') + ')';
 	} else {
 		console.log('unsupported condition!', cond);
 		return 'true';
