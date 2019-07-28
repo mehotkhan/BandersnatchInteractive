@@ -39,19 +39,19 @@ function preconditionToJS(cond) {
 	}
 }
 
-function checkPrecondition(preconditionId) {
-	let precondition = bv.preconditions[preconditionId];
-
+function evalPrecondition(precondition, text) {
 	if (precondition) {
 		let cond = preconditionToJS(precondition);
 		let match = eval(cond);
-
-		console.log(preconditionId, ':', cond, '==', match);
-
+		console.log(text, ':', cond, '==', match);
 		return match;
 	}
 
 	return true;
+}
+
+function checkPrecondition(preconditionId) {
+	return evalPrecondition(bv.preconditions[preconditionId], preconditionId);
 }
 
 function resolveSegmentGroup(sg) {
@@ -99,7 +99,7 @@ function getMoments(segmentId, ms) {
 	let moments = momentsBySegment[segmentId] || [];
 	for (let i = 0; i < moments.length; i++) {
 		let m = moments[i];
-		if (ms >= m.startMs && ms < m.endMs) {
+		if (ms >= m.startMs && ms < m.endMs && evalPrecondition(m.precondition)) {
 			result[segmentId + '/' + i] = m;
 		}
 	}
