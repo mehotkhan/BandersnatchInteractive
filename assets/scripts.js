@@ -383,6 +383,7 @@ function jumpForward() {
 		if (m.startMs > ms && (interactionMs == 0 || m.startMs < interactionMs))
 			interactionMs = m.startMs;
 
+	segmentTransition = true;
 	if (interactionMs) {
 		seek(interactionMs);
 	} else {
@@ -406,6 +407,7 @@ function jumpBack() {
 			inMoment = true;
 	}
 
+	segmentTransition = true;
 	if (interactionMs) {
 		seek(interactionMs);
 	} else if (inMoment) {
