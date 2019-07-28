@@ -368,10 +368,10 @@ function playNextSegment() {
 		ls[breadcrumb] = lastSegment;
 
 	segmentTransition = true;
-	let segment = nextSegment;
+	let segmentId = nextSegment;
 	nextSegment = null;
-	if (segment)
-		return playSegment(segment, true);
+	if (segmentId)
+		return playSegment(segmentId, true);
 	return false;
 }
 
