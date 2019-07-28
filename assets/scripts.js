@@ -181,7 +181,8 @@ function addChoices(r) {
 		index++;
 	}
 
-	document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
+	if (r.id in choicePoints)
+		document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
 }
 
 function momentStart(m) {
