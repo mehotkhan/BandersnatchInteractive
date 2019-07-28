@@ -414,12 +414,14 @@ window.onload = function() {
 	document.onkeydown = function (e) {
 		if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
 			return;
-		if (e.key == 'ArrowLeft') {
+		if (e.key == 'ArrowLeft')
 			jumpBack();
-		}
-		if (e.key == 'ArrowRight') {
+		if (e.key == 'ArrowRight')
 			jumpForward();
-		}
+		if (e.key == 'ArrowUp')
+			video_selector.playbackRate = video_selector.playbackRate * 2.0;
+		if (e.key == 'ArrowDown')
+			video_selector.playbackRate = video_selector.playbackRate / 2.0;
 	};
 
 	window.onhashchange = function() {
