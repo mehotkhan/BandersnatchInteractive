@@ -220,14 +220,9 @@ function ontimeupdate(evt) {
 	var ms = getCurrentMs();
 	currentSegment = getSegmentId(ms);
 
-	// ontimeupdate resolution is about a second. Augment it using timer.
 	if (timerId) {
 		clearTimeout(timerId);
 		timerId = 0;
-	}
-	if (currentSegment && nextSegment && nextSegment != currentSegment) {
-		var timeLeft = segmentMap.segments[currentSegment].endTimeMs - ms;
-		timerId = setTimeout(ontimeupdate, timeLeft);
 	}
 
 	// Distinguish between the user seeking manually with <video> controls,
@@ -308,6 +303,20 @@ function ontimeupdate(evt) {
 		location.hash = hash;
 		ls.place = hash;
 	}
+
+	// ontimeupdate resolution is about a second. Augment it using timer.
+	let nextEvent = segmentMap.segments[currentSegment].endTimeMs;
+	for (let k in currentMoments) {
+		let m = currentMoments[k];
+		if (m.endMs < nextEvent)
+			nextEvent = m.endMs;
+	}
+	for (let m of momentsBySegment[currentSegment] || [])
+		if (ms < m.startMs && m.startMs < nextEvent)
+			nextEvent = m.startMs;
+	var timeLeft = nextEvent - ms;
+	if (timeLeft > 0)
+		timerId = setTimeout(ontimeupdate, timeLeft);
 }
 
 function jumpForward() {
