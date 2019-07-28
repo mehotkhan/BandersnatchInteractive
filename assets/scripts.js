@@ -169,10 +169,10 @@ function addZones(segmentId) {
 	let caption = 'currentSegment(' + segmentId + ')';
 	addItem(ul, caption, 'javascript:playSegment("' + segmentId + '")');
 
-	var v = segmentMap.segments[segmentId];
-	if (v && v.ui && v.ui.interactionZones) {
+	var segment = segmentMap.segments[segmentId];
+	if (segment && segment.ui && segment.ui.interactionZones) {
 		var index = 0;
-		for (var z of v.ui.interactionZones) {
+		for (var z of segment.ui.interactionZones) {
 			var startMs = z[0];
 			var stopMs = z[1];
 			let caption = segmentId + ' interactionZone ' + index;
@@ -183,13 +183,15 @@ function addZones(segmentId) {
 
 	ul = newList("nextSegments");
 	let defaultSegmentId = null;
-	for (const [k, v] of Object.entries(segmentMap.segments[segmentId].next)) {
-		let caption = k;
-		if (segmentMap.segments[segmentId].defaultNext == k) {
-			caption = '[' + caption + ']';
-			defaultSegmentId = k;
+	if (segment) {
+		for (const [k, v] of Object.entries(segment.next)) {
+			let caption = k;
+			if (segment.defaultNext == k) {
+				caption = '[' + caption + ']';
+				defaultSegmentId = k;
+			}
+			addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 		}
-		addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 	}
 	setNextSegment(defaultSegmentId);
 }
@@ -251,6 +253,7 @@ var lastMoments = [];
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
 	currentSegment = getSegmentId(ms);
+	let segment = segmentMap.segments[currentSegment];
 
 	if (timerId) {
 		clearTimeout(timerId);
@@ -318,7 +321,7 @@ function ontimeupdate(evt) {
 
 		let hash = currentSegment;
 		// Pick the moment which starts closer to the current timestamp.
-		let bestMomentStart = segmentMap.segments[currentSegment].startTimeMs;
+		let bestMomentStart = segment ? segment.startTimeMs : 0;
 		for (let k in currentMoments) {
 			let m = currentMoments[k];
 			if (m.startMs > bestMomentStart) {
@@ -333,7 +336,7 @@ function ontimeupdate(evt) {
 	}
 
 	// ontimeupdate resolution is about a second. Augment it using timer.
-	let nextEvent = segmentMap.segments[currentSegment].endTimeMs;
+	let nextEvent = segment ? segment.endTimeMs : 0;
 	for (let k in currentMoments) {
 		let m = currentMoments[k];
 		if (m.endMs < nextEvent)
