@@ -416,6 +416,10 @@ window.onload = function() {
 		if (e.code == 'Space')
 			togglePlayPause();
 	};
+	video_selector.onkeydown = function(e) {
+		if (e.code == 'Space')
+			e.preventDefault();
+	};
 
 	document.onkeydown = function (e) {
 		if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
