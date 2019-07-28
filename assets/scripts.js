@@ -472,11 +472,16 @@ function playHash(hash) {
 		return;
 	lastHash = hash;
 	if (hash) {
-		let loc = hash.slice(1).split('/');
-		let segmentId = loc[0];
-		if (loc.length > 1)
-			seek(momentsBySegment[segmentId][loc[1]].startMs);
-		else
-			seek(getSegmentMs(segmentId));
+		hash = hash.slice(1);
+		if (hash[0] == 't')
+			seek(Number(Math.round(hash.slice(1) * 1000.0)));
+		else {
+			let loc = hash.split('/');
+			let segmentId = loc[0];
+			if (loc.length > 1)
+				seek(momentsBySegment[segmentId][loc[1]].startMs);
+			else
+				seek(getSegmentMs(segmentId));
+		}
 	}
 }
