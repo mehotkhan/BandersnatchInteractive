@@ -166,16 +166,15 @@ function addZones(segmentId) {
 	setNextSegment(defaultSegmentId);
 }
 
-var currentChoices = [];
+var currentChoiceMoment = null;
 
 function addChoices(r) {
-	currentChoices = [];
+	currentChoiceMoment = r;
 	nextChoice = -1;
 	var ul = newList("choices");
 	document.getElementById("choiceCaption").innerHTML = '';
 	if (!r) return;
 
-	currentChoices = r.choices;
 	nextChoice = r.defaultChoiceIndex;
 
 	let index = 0;
@@ -209,7 +208,7 @@ function momentUpdate(m, ms) {
 function momentEnd(m, seeked) {
 	console.log('momentEnd', m, seeked);
 	if (m.choices) {
-		addChoices(0);
+		addChoices(null);
 		document.getElementById("progress").style.width = 0;
 	}
 }
@@ -322,7 +321,7 @@ function ontimeupdate(evt) {
 
 function playNextSegment() {
 	if (nextChoice >= 0) {
-		let x = currentChoices[nextChoice];
+		let x = currentChoiceMoment.choices[nextChoice];
 		let choiceId = x.segmentId ? x.segmentId : (x.sg ? x.sg : x.id);
 		var segmentId = findSegment(choiceId);
 		console.log('choice', choiceId, 'nextSegment', segmentId);
@@ -475,6 +474,8 @@ function seek(ms) {
 function choice(choiceIndex) {
 	nextChoice = choiceIndex;
 	newList("choices");
+	if (!currentChoiceMoment.config.disableImmediateSceneTransition)
+		playNextSegment();
 }
 
 function applyImpression(impressionData) {
