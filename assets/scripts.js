@@ -10,8 +10,10 @@ var captions = {};
 var currentSegment;
 var nextSegment = null;
 var currentMoments = [];
-var persistentState = bv.stateHistory;
 var globalChoices = {};
+
+// Persistent state
+var ls = window.localStorage || {};
 
 function msToString(ms) {
 	return new Date(ms).toUTCString().split(' ')[4];
@@ -23,7 +25,7 @@ function getCurrentMs() {
 
 function preconditionToJS(cond) {
 	if (cond[0] == 'persistentState') {
-		return '!!persistentState["' + cond[1] + '"]';
+		return 'JSON.parse(ls["persistentState_' + cond[1] + '"])';
 	} else if (cond[0] == 'not') {
 		return '!(' + preconditionToJS(cond[1]) + ')';
 	} else if (cond[0] == 'and') {
@@ -457,7 +459,7 @@ function applyImpression(impressionData) {
 	if (impressionData && impressionData.type == 'userState') {
 		for (const [variable, value] of Object.entries(impressionData.data.persistent)) {
 			console.log('persistentState set', variable, '=', value);
-			persistentState[variable] = value;
+			ls["persistentState_" + variable] = JSON.stringify(value);
 		}
 	}
 }
