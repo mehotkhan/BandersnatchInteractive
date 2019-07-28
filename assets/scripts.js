@@ -215,47 +215,60 @@ function momentEnd(m, seeked) {
 
 var timerId = 0;
 var lastMs = 0;
+var lastSegment = null;
+var segmentTransition = false;
 
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
-	var segmentId = getSegmentId(ms);
+	currentSegment = getSegmentId(ms);
 
 	// ontimeupdate resolution is about a second. Augment it using timer.
 	if (timerId) {
 		clearTimeout(timerId);
 		timerId = 0;
 	}
-	if (segmentId && nextSegment && nextSegment != segmentId) {
-		var timeLeft = segmentMap.segments[segmentId].endTimeMs - ms;
+	if (currentSegment && nextSegment && nextSegment != currentSegment) {
+		var timeLeft = segmentMap.segments[currentSegment].endTimeMs - ms;
 		timerId = setTimeout(ontimeupdate, timeLeft);
 	}
 
 	// Distinguish between the user seeking manually with <video> controls,
 	// and the video playing normally (past some timestamp / boundary).
 	let timeElapsed = ms - lastMs;
-	let seeked = timeElapsed >= 0 && timeElapsed < 2000;
+	let seeked = timeElapsed < 0 || timeElapsed >= 2000;
 	lastMs = ms;
 
 	// Recalculate title and hash only when we pass some meaningful timestamp.
 	let placeChanged = false;
 
-	if (currentSegment != segmentId) {
-		console.log('ontimeupdate', currentSegment, segmentId, ms, msToString(ms));
-		if (seeked) {
-			playSegment(segmentId, true);
-		} else {
+	// Handle segment change
+	if (lastSegment != currentSegment) {
+		console.log('ontimeupdate', lastSegment, '->', currentSegment, ms, msToString(ms), seeked);
+		lastSegment = currentSegment;
+		if (!seeked) {
 			// TODO: activate and apply user choice (whether or not it
 			// was default) instead of just playing the next segment.
-			playSegment(nextSegment, true);
+			segmentTransition = true;
+			if (playSegment(nextSegment, true)) {
+				// playSegment decided to seek, which means that this
+				// currentSegment is invalid, and a recursive
+				// ontimeupdate invocation should have taken care of
+				// things already. Return.
+				return;
+			}
 		}
-		currentSegment = segmentId;
+		setNextSegment(null);
+		addZones(currentSegment);
 		placeChanged = true;
 	}
 
-	var moments = getMoments(segmentId, ms);
+	var naturalTransition = !seeked || segmentTransition;
+	segmentTransition = false;
+
+	var moments = getMoments(currentSegment, ms);
 	for (let k in currentMoments)
 		if (!(k in moments)) {
-			momentEnd(currentMoments[k], seeked);
+			momentEnd(currentMoments[k], !naturalTransition);
 			placeChanged = true;
 		}
 	for (let k in currentMoments)
@@ -263,14 +276,14 @@ function ontimeupdate(evt) {
 			momentUpdate(currentMoments[k], ms);
 	for (let k in moments)
 		if (!(k in currentMoments)) {
-			momentStart(moments[k], seeked);
+			momentStart(moments[k], !naturalTransition);
 			placeChanged = true;
 		}
 	currentMoments = moments;
 
 	if (placeChanged) {
 		let title = 'Bandersnatch';
-		title += ' - Chapter ' + segmentId;
+		title += ' - Chapter ' + currentSegment;
 		for (let k in moments) {
 			let m = moments[k];
 			if (m.type.substr(0, 6) == 'scene:') {
@@ -282,9 +295,9 @@ function ontimeupdate(evt) {
 		}
 		document.title = title;
 
-		let hash = segmentId;
+		let hash = currentSegment;
 		// Pick the moment which starts closer to the current timestamp.
-		let bestMomentStart = segmentMap.segments[segmentId].startTimeMs;
+		let bestMomentStart = segmentMap.segments[currentSegment].startTimeMs;
 		for (let k in moments) {
 			let m = moments[k];
 			if (m.startMs > bestMomentStart) {
@@ -433,9 +446,8 @@ function seek(ms) {
 	clearTimeout(timerId);
 	console.log('seek', ms);
 	momentSelected = null;
-	lastMs = ms;
-	currentSegment = getSegmentId(ms);
 	document.getElementById("video").currentTime = ms / 1000.0;
+	ontimeupdate(null);
 }
 
 function choice(choiceId, text, id) {
@@ -464,7 +476,9 @@ function playSegment(segmentId, noSeek) {
 	if (!noSeek || oldSegment != segmentId) {
 		var ms = getSegmentMs(segmentId);
 		seek(ms);
+		return true;
 	}
+	return false;
 }
 
 var lastHash = '';
