@@ -380,7 +380,7 @@ function jumpForward() {
 	let moments = momentsBySegment[segmentId] || [];
 	// Find the earliest moment within this segment after cursor
 	for (let m of moments)
-		if (m.startMs >= ms && (interactionMs == 0 || m.startMs < interactionMs))
+		if (m.startMs > ms && (interactionMs == 0 || m.startMs < interactionMs))
 			interactionMs = m.startMs;
 
 	if (interactionMs) {
