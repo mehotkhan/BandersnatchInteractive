@@ -367,7 +367,10 @@ window.onload = function() {
 	var file_selector = document.getElementById("file-selector");
 	function startPlayback() {
 		file_selector.style.display = 'none';
-		playSegment(null);
+		if (window.location.hash)
+			playHash(window.location.hash);
+		else
+			playSegment(null);
 		video_selector.play();
 	}
 	if (video_source_selector.getAttribute("src") == '') {
@@ -422,9 +425,6 @@ window.onload = function() {
 	window.onhashchange = function() {
 		playHash(window.location.hash);
 	};
-	if (window.location.hash) {
-		playHash(window.location.hash);
-	}
 };
 
 function seek(ms) {
