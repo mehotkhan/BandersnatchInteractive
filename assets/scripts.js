@@ -1,15 +1,12 @@
+// Data
 var segmentMap = SegmentMap;
 var bv = bandersnatch.videos['80988062'].interactiveVideoMoments.value;
 var choicePoints = bv.choicePointNavigatorMetadata.choicePointsMetadata.choicePoints;
 var momentsBySegment = bv.momentsBySegment;
 var segmentGroups = bv.segmentGroups;
-var captions = {};
-var currentSegment;
-var currentMoment;
-var nextSegment = null;
-var momentSelected = null;
-var persistentState = bv.stateHistory;
-var globalChoices = {};
+
+// Persistent state
+var ls = window.localStorage || {};
 
 function msToString(ms) {
 	return new Date(ms).toUTCString().split(' ')[4];
@@ -19,76 +16,73 @@ function getCurrentMs() {
 	return Math.round(document.getElementById("video").currentTime * 1000.0);
 }
 
-function generateJs(cond) {
+function preconditionToJS(cond) {
 	if (cond[0] == 'persistentState') {
-		return '!!persistentState["' + cond[1] + '"]';
+		return 'JSON.parse(ls["persistentState_' + cond[1] + '"])';
 	} else if (cond[0] == 'not') {
-		return '!(' + generateJs(cond[1]) + ')';
+		return '!(' + preconditionToJS(cond[1]) + ')';
 	} else if (cond[0] == 'and') {
-		var conds = [];
-		for (var i = 1; i < cond.length; i++) {
-			conds.push('(' + generateJs(cond[i]) + ')');
-		}
-		return '(' + conds.join(' && ') + ')';
+		return '(' + cond.slice(1).map(preconditionToJS).join(' && ') + ')';
 	} else if (cond[0] == 'or') {
-		var conds = [];
-		for (var i = 1; i < cond.length; i++) {
-			conds.push('(' + generateJs(cond[i]) + ')');
-		}
-		return '(' + conds.join(' || ') + ')';
+		return '(' + cond.slice(1).map(preconditionToJS).join(' || ') + ')';
+	} else if (cond[0] == 'eql' && cond.length == 3) {
+		return '(' + cond.slice(1).map(preconditionToJS).join(' == ') + ')';
+	} else if (cond === false) {
+		return false;
+	} else if (cond === true) {
+		return true;
+	} else if (typeof cond === 'string') {
+		return cond;
 	} else {
 		console.log('unsupported condition!', cond);
 		return 'true';
 	}
 }
 
-function checkPrecondition(segmentId) {
-	let precondition = bv.preconditions[segmentId];
-
+function evalPrecondition(precondition, text) {
 	if (precondition) {
-		let cond = generateJs(precondition);
+		let cond = preconditionToJS(precondition);
 		let match = eval(cond);
-
-		console.log(cond, '==', match);
-
+		console.log('precondition', text, ':', cond, '==', match);
 		return match;
 	}
 
 	return true;
 }
 
-function findSegment(id) {
-	if (id.startsWith('nsg-')) {
-		id = id.substr(4);
-	}
-	if (SegmentMap.segments[id]) {
-		// check precondition
-		return id;
-	}
+function checkPrecondition(preconditionId) {
+	return evalPrecondition(bv.preconditions[preconditionId], preconditionId);
+}
 
-	if (segmentGroups[id]) {
-		for (v of segmentGroups[id]) {
-			if (v.segmentGroup) {
-				return findSegment(v.segmentGroup);
-			} else if (v.segment) {
-				// check precondition
-				return v.segment;
-			} else {
-				if (checkPrecondition(v))
-					return v;
-			}
+function resolveSegmentGroup(sg) {
+	let results = [];
+	for (let v of segmentGroups[sg]) {
+		if (v.precondition) {
+			if (!checkPrecondition(v.precondition))
+				continue;
+		}
+		if (v.segmentGroup) {
+			results.push(resolveSegmentGroup(v.segmentGroup));
+		} else if (v.segment) {
+			// TODO: does the included precondition override or
+			// complement the segment precondition?
+			if (!checkPrecondition(v.segment))
+				continue;
+			results.push(v.segment);
+		} else {
+			if (!checkPrecondition(v))
+				continue;
+			results.push(v);
 		}
 	}
-	return id;
+	console.log('segment group', sg, '=>', results);
+	return results[0];
 }
 
-function getChoiceMs(choiceId) {
-	var segmentId = findSegment(choiceId);
-	return getSegmentMs(segmentId);
-}
-
+/// Returns the segment ID at the given timestamp.
+/// There will be exactly one segment for any timestamp within the video file.
 function getSegmentId(ms) {
-	for (const [k, v] of Object.entries(SegmentMap.segments)) {
+	for (const [k, v] of Object.entries(segmentMap.segments)) {
 		if (ms >= v.startTimeMs && ms < v.endTimeMs) {
 			return k;
 		}
@@ -100,16 +94,17 @@ function getSegmentMs(segmentId) {
 	return segmentMap.segments[segmentId].startTimeMs;
 }
 
-function getMoment(ms) {
-	for (const [k, v] of Object.entries(momentsBySegment)) {
-		for (r of v)
-			if (r.type == 'scene:cs_bs') {
-				if (ms >= r.startMs && ms < r.endMs) {
-					return r;
-				}
-			}
+function getMoments(segmentId, ms) {
+	let result = {};
+	let moments = momentsBySegment[segmentId] || [];
+	for (let i = 0; i < moments.length; i++) {
+		let m = moments[i];
+		let momentId = segmentId + '/' + i;
+		if (ms >= m.startMs && ms < m.endMs && evalPrecondition(m.precondition, 'moment ' + momentId)) {
+			result[momentId] = m;
+		}
 	}
-	return null;
+	return result;
 }
 
 function newList(id) {
@@ -129,9 +124,13 @@ function addItem(ul, text, url) {
 	ul.appendChild(li);
 }
 
+var nextChoice = -1;
+var nextSegment = null;
+
 function setNextSegment(segmentId, comment) {
 	console.log('setNextSegment', segmentId, comment);
 	nextSegment = segmentId;
+	nextChoice = -1;
 	var ul = newList("nextSegment");
 	var caption = 'nextSegment: ' + segmentId;
 	addItem(ul, comment ? caption + ' (' + comment + ')' : caption,
@@ -140,142 +139,267 @@ function setNextSegment(segmentId, comment) {
 
 function addZones(segmentId) {
 	var ul = newList("interactionZones");
-	var caption = 'currentSegment(' + segmentId + ')';
+	let caption = 'currentSegment(' + segmentId + ')';
 	addItem(ul, caption, 'javascript:playSegment("' + segmentId + '")');
 
 	var v = segmentMap.segments[segmentId];
 	if (v && v.ui && v.ui.interactionZones) {
 		var index = 0;
-		for (z of v.ui.interactionZones) {
+		for (var z of v.ui.interactionZones) {
 			var startMs = z[0];
 			var stopMs = z[1];
-			var caption = segmentId + ' interactionZone ' + index;
+			let caption = segmentId + ' interactionZone ' + index;
 			addItem(ul, caption, 'javascript:seek(' + startMs + ')');
 			index++;
 		}
 	}
 
-	var ul = newList("nextSegments");
+	ul = newList("nextSegments");
+	let defaultSegmentId = null;
 	for (const [k, v] of Object.entries(segmentMap.segments[segmentId].next)) {
-		var caption = captions[k] ? captions[k] : k;
+		let caption = k;
 		if (segmentMap.segments[segmentId].defaultNext == k) {
 			caption = '[' + caption + ']';
-			setNextSegment(k);
+			defaultSegmentId = k;
 		}
 		addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 	}
+	setNextSegment(defaultSegmentId);
 }
 
+var currentChoiceMoment = null;
+
 function addChoices(r) {
+	currentChoiceMoment = r;
+	nextChoice = -1;
 	var ul = newList("choices");
 	document.getElementById("choiceCaption").innerHTML = '';
 	if (!r) return;
-	index = 0;
 
-	for (x of r.choices) {
-		console.log(x.id, 'choice saved');
-		globalChoices[x.id] = x;
+	nextChoice = r.defaultChoiceIndex;
 
+	let index = 0;
+	for (let x of r.choices) {
 		var caption = r.defaultChoiceIndex == index ? '[' + x.text + ']' : x.text;
-		addItem(ul, caption, 'javascript:choice("' +
-			(x.segmentId ? x.segmentId : (x.sg ? x.sg : x.id)) + '", "' + x.text + '", "' + x.id + '")');
+		addItem(ul, caption, 'javascript:choice(' + index + ')');
 		index++;
 	}
 
-	document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
+	if (r.id in choicePoints)
+		document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
 }
 
-
-function updateProgressBar(ms, r) {
-	var p = 0;
-
-	if (r && ms > r.startMs && ms < r.endMs) {
-		p = 100 - Math.floor((ms - r.startMs) * 100 / (r.endMs - r.startMs));
+function momentStart(m, seeked) {
+	console.log('momentStart', m, seeked);
+	if (m.choices) {
+		addChoices(m);
 	}
+	if (!seeked)
+		applyImpression(m.impressionData);
+}
 
-	document.getElementById("progress").style.width = p + '%';
+function momentUpdate(m, ms) {
+	//console.log('momentUpdate', m);
+	if (m.choices) {
+		var p = 100 - ((ms - m.startMs) * 100.0 / (m.endMs - m.startMs));
+		document.getElementById("progress").style.width = p + '%';
+	}
+}
+
+function momentEnd(m, seeked) {
+	console.log('momentEnd', m, seeked);
+	if (m.choices) {
+		addChoices(null);
+		document.getElementById("progress").style.width = 0;
+	}
 }
 
 var timerId = 0;
-
-var switchFrom = null;
-var switchTo = null;
-
-function ontimeout(nextSegment) {
-	console.log('ontimeout', nextSegment);
-
-	if (switchFrom != currentSegment || switchTo != nextSegment) {
-		playSegment(nextSegment);
-	}
-
-	switchFrom = currentSegment;
-	switchTo = nextSegment;
-}
+var lastMs = 0;
+var currentSegment;
+var lastSegment = null;
+var segmentTransition = false;
+var lastMoments = [];
 
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
+	currentSegment = getSegmentId(ms);
 
-	var segmentId = getSegmentId(ms);
-
-	// ontimeupdate resolution is about a second, better use timer
-	clearTimeout(timerId);
-	if (segmentId && nextSegment && nextSegment != segmentId) {
-		var timeLeft = SegmentMap.segments[segmentId].endTimeMs - ms;
-		timerId = setTimeout(ontimeout, timeLeft, nextSegment);
+	if (timerId) {
+		clearTimeout(timerId);
+		timerId = 0;
 	}
 
-	if (currentSegment != segmentId) {
-		console.log('ontimeupdate', currentSegment, segmentId, ms, msToString(ms));
-		currentSegment = segmentId;
-		addZones(segmentId);
-		currentMoment = null;
-		addChoices(0);
-	}
+	// Distinguish between the user seeking manually with <video> controls,
+	// and the video playing normally (past some timestamp / boundary).
+	let timeElapsed = ms - lastMs;
+	let seeked = timeElapsed < 0 || timeElapsed >= 2000;
+	lastMs = ms;
 
-	var r = getMoment(ms);
-	if (r && momentSelected != r.id) {
-		updateProgressBar(ms, r);
-		if (currentMoment != r.id) {
-			currentMoment = r.id;
-			console.log('interaction', currentMoment);
-			addChoices(r);
+	// Recalculate title and hash only when we pass some meaningful timestamp.
+	let placeChanged = false;
+
+	// Handle segment change
+	if (lastSegment != currentSegment) {
+		console.log('ontimeupdate', lastSegment, '->', currentSegment, ms, msToString(ms), seeked);
+		lastSegment = currentSegment;
+		if (!seeked) {
+			if (playNextSegment()) {
+				// playSegment decided to seek, which means that this
+				// currentSegment is invalid, and a recursive
+				// ontimeupdate invocation should have taken care of
+				// things already. Return.
+				return;
+			}
 		}
-	} else {
-		currentMoment = null;
-		addChoices(0);
-		updateProgressBar(0);
+		addZones(currentSegment);
+		placeChanged = true;
 	}
+
+	var naturalTransition = !seeked || segmentTransition;
+	segmentTransition = false;
+
+	var currentMoments = getMoments(currentSegment, ms);
+	for (let k in lastMoments)
+		if (!(k in currentMoments)) {
+			momentEnd(lastMoments[k], !naturalTransition);
+			placeChanged = true;
+		}
+	for (let k in lastMoments)
+		if (k in currentMoments)
+			momentUpdate(lastMoments[k], ms);
+	for (let k in currentMoments)
+		if (!(k in lastMoments)) {
+			momentStart(currentMoments[k], !naturalTransition);
+			placeChanged = true;
+		}
+	lastMoments = currentMoments;
+
+	if (placeChanged) {
+		let title = 'Bandersnatch';
+		title += ' - Chapter ' + currentSegment;
+		for (let k in currentMoments) {
+			let m = currentMoments[k];
+			if (m.type.substr(0, 6) == 'scene:') {
+				if (m.id && m.id in choicePoints && choicePoints[m.id].description)
+					title += ' - Choice "' + choicePoints[m.id].description + '"';
+				else
+					title += ' - Choice ' + (m.id || k);
+			}
+		}
+		document.title = title;
+
+		let hash = currentSegment;
+		// Pick the moment which starts closer to the current timestamp.
+		let bestMomentStart = segmentMap.segments[currentSegment].startTimeMs;
+		for (let k in currentMoments) {
+			let m = currentMoments[k];
+			if (m.startMs > bestMomentStart) {
+				hash = k;
+				bestMomentStart = m.startMs;
+			}
+		}
+		hash = '#' + hash;
+		lastHash = hash; // suppress onhashchange event
+		location.hash = hash;
+		ls.place = hash;
+	}
+
+	// ontimeupdate resolution is about a second. Augment it using timer.
+	let nextEvent = segmentMap.segments[currentSegment].endTimeMs;
+	for (let k in currentMoments) {
+		let m = currentMoments[k];
+		if (m.endMs < nextEvent)
+			nextEvent = m.endMs;
+	}
+	for (let m of momentsBySegment[currentSegment] || [])
+		if (ms < m.startMs && m.startMs < nextEvent)
+			nextEvent = m.startMs;
+	var timeLeft = nextEvent - ms;
+	if (timeLeft > 0)
+		timerId = setTimeout(ontimeupdate, timeLeft);
 }
 
-function jumpForward(ms) {
+function playNextSegment() {
+	if (nextChoice >= 0) {
+		let x = currentChoiceMoment.choices[nextChoice];
+		if (x.segmentId)
+			nextSegment = x.segmentId;
+		else if (x.sg)
+			nextSegment = resolveSegmentGroup(x.sg);
+		else
+			nextSegment = null;
+		console.log('choice', nextChoice, 'nextSegment', nextSegment);
+		applyImpression(x.impressionData);
+	}
+
+	let breadcrumb = 'breadcrumb_' + nextSegment;
+	if (!(breadcrumb in ls))
+		ls[breadcrumb] = lastSegment;
+
+	segmentTransition = true;
+	let segment = nextSegment;
+	nextSegment = null;
+	if (segment)
+		return playSegment(segment, true);
+	return false;
+}
+
+function jumpForward() {
 	var ms = getCurrentMs();
 	var segmentId = getSegmentId(ms);
-	var v = segmentMap.segments[segmentId];
 
 	var interactionMs = 0;
-	if (v && v.ui && v.ui.interactionZones) {
-		for (z of v.ui.interactionZones) {
-			var startMs = z[0];
-			var stopMs = z[1];
-			if (ms < startMs)
-				interactionMs = startMs;
-		}
-	}
+	let moments = momentsBySegment[segmentId] || [];
+	// Find the earliest moment within this segment after cursor
+	for (let m of moments)
+		if (m.startMs >= ms && (interactionMs == 0 || m.startMs < interactionMs))
+			interactionMs = m.startMs;
 
 	if (interactionMs) {
 		seek(interactionMs);
 	} else {
-		playSegment(nextSegment);
+		playNextSegment();
 	}
 }
 
 function jumpBack() {
 	var ms = getCurrentMs();
 	var segmentId = getSegmentId(ms);
-	var startMs = getSegmentMs(segmentId);
-	var previousSegment = getSegmentId(startMs - 1000);
-	console.log('jumpBack from-to', segmentId, previousSegment);
-	playSegment(previousSegment);
+	let segment = segmentMap.segments[segmentId];
+
+	var interactionMs = 0;
+	let moments = momentsBySegment[segmentId] || [];
+	let inMoment = false;
+	// Find the latest moment within this segment before cursor
+	for (let m of moments) {
+		if (m.endMs < ms && m.startMs > interactionMs)
+			interactionMs = m.startMs;
+		if (m.startMs != segment.startTimeMs && m.startMs <= ms && ms < m.endMs)
+			inMoment = true;
+	}
+
+	if (interactionMs) {
+		seek(interactionMs);
+	} else if (inMoment) {
+		seek(segment.startTimeMs);
+	} else {
+		let breadcrumb = 'breadcrumb_' + segmentId;
+		if (breadcrumb in ls) {
+			// Jump to last moment in previous segment
+			segmentId = ls[breadcrumb];
+			segment = segmentMap.segments[segmentId];
+
+			interactionMs = segment.startTimeMs;
+			let moments = momentsBySegment[segmentId] || [];
+			for (let m of moments)
+				if (m.startMs > interactionMs)
+					interactionMs = m.startMs;
+			seek(interactionMs);
+		} else {
+			seek(0);
+		}
+	}
 }
 
 function toggleFullScreen() {
@@ -310,120 +434,129 @@ function togglePlayPause() {
 	else v.pause();
 }
 
-function onload() {
+window.onload = function() {
 	var video_selector = document.getElementById("video");
 	var video_source_selector = document.getElementById("video-source");
 	var file_selector = document.getElementById("file-selector");
+	function startPlayback() {
+		file_selector.style.display = 'none';
+		if (window.location.hash)
+			playHash(window.location.hash);
+		else if (ls.place)
+			playHash(ls.place);
+		else
+			playSegment(null);
+		video_selector.play();
+	}
 	if (video_source_selector.getAttribute("src") == '') {
-		console.log('no video')
+		console.log('no video');
 		file_selector.style.display = 'table';
 		document.getElementById("wrapper-video").style.display = 'none';
+	} else {
+		startPlayback();
 	}
 	document.getElementById('fileinput').addEventListener('change', function () {
 		var file = this.files[0];
-		var fileUrl =  URL.createObjectURL(file)
+		var fileUrl = URL.createObjectURL(file);
 		video_selector.src = fileUrl;
-		video_selector.play();
-		file_selector.style.display = 'none';
 		document.getElementById("wrapper-video").style.display = 'block';
+		startPlayback();
 	}, false);
 
 	video_selector.ontimeupdate = ontimeupdate;
 
 	var c = document.getElementById("c");
 	c.ondblclick = toggleFullScreen;
-	c.onclick = function () {
-		// can't togglePlayPause here, choice buttons stop the video
-		// should use preventdefault or something
-		// use spacebar for now
-		// mind that autoplay is disabled in latest chrome, so play after click
-		document.getElementById("video").play();
+	video_selector.onclick = function (e) {
+		togglePlayPause();
+		e.preventDefault();
 	};
 
 	document.onkeypress = function (e) {
+		if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
+			return;
 		if (e.code == 'KeyF')
 			toggleFullScreen();
 		if (e.code == 'KeyR')
 			playSegment(0);
 		if (e.code == 'Space')
 			togglePlayPause();
-	}
+	};
+	video_selector.onkeydown = function(e) {
+		if (e.code == 'Space')
+			e.preventDefault();
+	};
 
-	document.onkeydown = function (evt) {
-		var v = document.getElementById("video");
-
-		if (evt.key == 'ArrowLeft') {
+	document.onkeydown = function (e) {
+		if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
+			return;
+		if (e.key == 'ArrowLeft')
 			jumpBack();
-		}
-
-		if (evt.key == 'ArrowRight') {
+		if (e.key == 'ArrowRight')
 			jumpForward();
-		}
-	}
+		if (e.key == 'ArrowUp')
+			video_selector.playbackRate = video_selector.playbackRate * 2.0;
+		if (e.key == 'ArrowDown')
+			video_selector.playbackRate = video_selector.playbackRate / 2.0;
+	};
 
-	if (location.hash) {
-		var segmentId = location.hash.slice(1);
-		playSegment(segmentId);
-	}
-
-}
+	window.onhashchange = function() {
+		playHash(window.location.hash);
+	};
+};
 
 function seek(ms) {
-	clearTimeout(timerId);
 	console.log('seek', ms);
-	momentSelected = null;
 	document.getElementById("video").currentTime = ms / 1000.0;
+	ontimeupdate(null);
 }
 
-function choice(choiceId, text, id) {
-	var segmentId = findSegment(choiceId);
-	console.log('choice', choiceId, 'nextSegment', segmentId);
-	applyImpression(globalChoices[id]);
-	setNextSegment(segmentId, text);
-	momentSelected = choiceId;
-	addChoices(0);
+function choice(choiceIndex) {
+	nextChoice = choiceIndex;
+	newList("choices");
+	if (!currentChoiceMoment.config.disableImmediateSceneTransition)
+		playNextSegment();
 }
 
-function applyImpression(obj) {
-	if (!obj) {
-		return;
-	}
-
-	impressionData = obj.impressionData;
-
+function applyImpression(impressionData) {
 	if (impressionData && impressionData.type == 'userState') {
 		for (const [variable, value] of Object.entries(impressionData.data.persistent)) {
 			console.log('persistentState set', variable, '=', value);
-			persistentState[variable] = value;
+			ls["persistentState_" + variable] = JSON.stringify(value);
 		}
 	}
 }
 
-function applyPlaybackImpression(segmentId) {
-	let moments = momentsBySegment[segmentId];
+function playSegment(segmentId, noSeek) {
+	if (!segmentId || typeof segmentId === "undefined")
+		segmentId = segmentMap.initialSegment;
+	var oldSegment = getSegmentId(getCurrentMs());
+	console.log('playSegment', oldSegment, '->', segmentId);
+	if (!noSeek || oldSegment != segmentId) {
+		var ms = getSegmentMs(segmentId);
+		seek(ms);
+		return true;
+	}
+	return false;
+}
 
-	if (!moments) {
-		console.log('warning - no moments');
+var lastHash = '';
+function playHash(hash) {
+	// console.log('playHash', lastHash, '->', hash);
+	if (hash == lastHash)
 		return;
-	}
-
-	for (moment of moments) {
-		if (moment.type != 'notification:playbackImpression') {
-			continue;
+	lastHash = hash;
+	if (hash) {
+		hash = hash.slice(1);
+		if (hash[0] == 't')
+			seek(Number(Math.round(hash.slice(1) * 1000.0)));
+		else {
+			let loc = hash.split('/');
+			let segmentId = loc[0];
+			if (loc.length > 1)
+				seek(momentsBySegment[segmentId][loc[1]].startMs);
+			else
+				seek(getSegmentMs(segmentId));
 		}
-
-		applyImpression(moment);
 	}
-}
-
-function playSegment(segmentId) {
-	clearTimeout(timerId);
-	if (!segmentId || segmentId == "undefined")
-		segmentId = '1A';
-	console.log('playSegment', segmentId);
-	applyPlaybackImpression(segmentId);
-	location.hash = segmentId;
-	document.title = 'Bandersnatch - Chapter ' + segmentId;
-	var ms = getSegmentMs(segmentId);
-	seek(ms);
 }
