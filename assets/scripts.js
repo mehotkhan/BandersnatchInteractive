@@ -115,7 +115,7 @@ function resolveSegmentGroup(sg) {
 /// There will be exactly one segment for any timestamp within the video file.
 function getSegmentId(ms) {
 	for (const [k, v] of Object.entries(segmentMap.segments)) {
-		if (ms >= v.startTimeMs && ms < v.endTimeMs) {
+		if (ms >= v.startTimeMs && (!v.endTimeMs || ms < v.endTimeMs)) {
 			return k;
 		}
 	}
