@@ -32,7 +32,7 @@ function preconditionToJS(cond) {
 	} else if (cond === true) {
 		return true;
 	} else if (typeof cond === 'string') {
-		return cond;
+		return JSON.stringify(cond);
 	} else {
 		console.log('unsupported condition!', cond);
 		return 'true';
