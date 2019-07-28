@@ -43,7 +43,7 @@ function evalPrecondition(precondition, text) {
 	if (precondition) {
 		let cond = preconditionToJS(precondition);
 		let match = eval(cond);
-		console.log(text, ':', cond, '==', match);
+		console.log('precondition', text, ':', cond, '==', match);
 		return match;
 	}
 
@@ -99,8 +99,9 @@ function getMoments(segmentId, ms) {
 	let moments = momentsBySegment[segmentId] || [];
 	for (let i = 0; i < moments.length; i++) {
 		let m = moments[i];
-		if (ms >= m.startMs && ms < m.endMs && evalPrecondition(m.precondition)) {
-			result[segmentId + '/' + i] = m;
+		let momentId = segmentId + '/' + i;
+		if (ms >= m.startMs && ms < m.endMs && evalPrecondition(m.precondition, 'moment ' + momentId)) {
+			result[momentId] = m;
 		}
 	}
 	return result;
