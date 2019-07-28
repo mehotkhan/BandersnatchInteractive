@@ -311,17 +311,13 @@ function ontimeupdate(evt) {
 function jumpForward() {
 	var ms = getCurrentMs();
 	var segmentId = getSegmentId(ms);
-	var v = segmentMap.segments[segmentId];
 
 	var interactionMs = 0;
-	if (v && v.ui && v.ui.interactionZones) {
-		for (var z of v.ui.interactionZones) {
-			var startMs = z[0];
-			var stopMs = z[1];
-			if (ms < startMs)
-				interactionMs = startMs;
-		}
-	}
+	let moments = momentsBySegment[segmentId] || [];
+	// Find the earliest moment within this segment
+	for (let m of moments)
+		if (m.startMs >= ms && (interactionMs == 0 || m.startMs < interactionMs))
+			interactionMs = m.startMs;
 
 	if (interactionMs) {
 		seek(interactionMs);
