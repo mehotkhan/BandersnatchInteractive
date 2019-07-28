@@ -105,7 +105,7 @@ function getMoments(segmentId, ms) {
 	for (let i = 0; i < moments.length; i++) {
 		let m = moments[i];
 		if (ms >= m.startMs && ms < m.endMs) {
-			result[segmentId + '-' + i] = m;
+			result[segmentId + '/' + i] = m;
 		}
 	}
 	return result;
@@ -218,7 +218,6 @@ var lastMs = 0;
 
 function ontimeupdate(evt) {
 	var ms = getCurrentMs();
-
 	var segmentId = getSegmentId(ms);
 
 	// ontimeupdate resolution is about a second. Augment it using timer.
@@ -237,6 +236,9 @@ function ontimeupdate(evt) {
 	let seeked = timeElapsed >= 0 && timeElapsed < 2000;
 	lastMs = ms;
 
+	// Recalculate title and hash only when we pass some meaningful timestamp.
+	let placeChanged = false;
+
 	if (currentSegment != segmentId) {
 		console.log('ontimeupdate', currentSegment, segmentId, ms, msToString(ms));
 		if (seeked) {
@@ -246,19 +248,54 @@ function ontimeupdate(evt) {
 			// was default) instead of just playing the next segment.
 			playSegment(nextSegment, true);
 		}
+		currentSegment = segmentId;
+		placeChanged = true;
 	}
 
 	var moments = getMoments(segmentId, ms);
 	for (let k in currentMoments)
-		if (!(k in moments))
+		if (!(k in moments)) {
 			momentEnd(currentMoments[k], seeked);
+			placeChanged = true;
+		}
 	for (let k in currentMoments)
 		if (k in moments)
 			momentUpdate(currentMoments[k], ms);
 	for (let k in moments)
-		if (!(k in currentMoments))
+		if (!(k in currentMoments)) {
 			momentStart(moments[k], seeked);
+			placeChanged = true;
+		}
 	currentMoments = moments;
+
+	if (placeChanged) {
+		let title = 'Bandersnatch';
+		title += ' - Chapter ' + segmentId;
+		for (let k in moments) {
+			let m = moments[k];
+			if (m.type.substr(0, 6) == 'scene:') {
+				if (m.id && m.id in choicePoints && choicePoints[m.id].description)
+					title += ' - Choice "' + choicePoints[m.id].description + '"';
+				else
+					title += ' - Choice ' + (m.id || k);
+			}
+		}
+		document.title = title;
+
+		let hash = segmentId;
+		// Pick the moment which starts closer to the current timestamp.
+		let bestMomentStart = segmentMap.segments[segmentId].startTimeMs;
+		for (let k in moments) {
+			let m = moments[k];
+			if (m.startMs > bestMomentStart) {
+				hash = k;
+				bestMomentStart = m.startMs;
+			}
+		}
+		hash = '#' + hash;
+		lastHash = hash; // suppress onhashchange event
+		location.hash = hash;
+	}
 }
 
 function jumpForward() {
@@ -395,6 +432,7 @@ function seek(ms) {
 	console.log('seek', ms);
 	momentSelected = null;
 	lastMs = ms;
+	currentSegment = getSegmentId(ms);
 	document.getElementById("video").currentTime = ms / 1000.0;
 }
 
@@ -419,18 +457,20 @@ function applyImpression(impressionData) {
 function playSegment(segmentId, noSeek) {
 	if (!segmentId || typeof segmentId === "undefined")
 		segmentId = segmentMap.initialSegment;
-	console.log('playSegment', currentSegment, '->', segmentId);
-	document.title = 'Bandersnatch - Chapter ' + segmentId;
 	var oldSegment = getSegmentId(getCurrentMs());
-	currentSegment = segmentId;
-	location.hash = segmentId;
+	console.log('playSegment', oldSegment, '->', segmentId);
 	if (!noSeek || oldSegment != segmentId) {
 		var ms = getSegmentMs(segmentId);
 		seek(ms);
 	}
 }
 
+var lastHash = '';
 function playHash(hash) {
+	// console.log('playHash', lastHash, '->', hash);
+	if (hash == lastHash)
+		return;
+	lastHash = hash;
 	if (hash) {
 		let loc = hash.slice(1).split('/');
 		let segmentId = loc[0];
