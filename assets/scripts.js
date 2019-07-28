@@ -196,7 +196,7 @@ function momentStart(m, seeked) {
 function momentUpdate(m, ms) {
 	//console.log('momentUpdate', m);
 	if (m.choices) {
-		var p = 100 - Math.floor((ms - m.startMs) * 100 / (m.endMs - m.startMs));
+		var p = 100 - ((ms - m.startMs) * 100.0 / (m.endMs - m.startMs));
 		document.getElementById("progress").style.width = p + '%';
 	}
 }
