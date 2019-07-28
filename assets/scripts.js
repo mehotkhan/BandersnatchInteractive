@@ -25,6 +25,14 @@ function preconditionToJS(cond) {
 		return '(' + cond.slice(1).map(preconditionToJS).join(' && ') + ')';
 	} else if (cond[0] == 'or') {
 		return '(' + cond.slice(1).map(preconditionToJS).join(' || ') + ')';
+	} else if (cond[0] == 'eql' && cond.length == 3) {
+		return '(' + cond.slice(1).map(preconditionToJS).join(' == ') + ')';
+	} else if (cond === false) {
+		return false;
+	} else if (cond === true) {
+		return true;
+	} else if (typeof cond === 'string') {
+		return cond;
 	} else {
 		console.log('unsupported condition!', cond);
 		return 'true';
