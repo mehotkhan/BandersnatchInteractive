@@ -306,6 +306,7 @@ function ontimeupdate(evt) {
 		hash = '#' + hash;
 		lastHash = hash; // suppress onhashchange event
 		location.hash = hash;
+		ls.place = hash;
 	}
 }
 
@@ -376,6 +377,8 @@ window.onload = function() {
 		file_selector.style.display = 'none';
 		if (window.location.hash)
 			playHash(window.location.hash);
+		else if (ls.place)
+			playHash(ls.place);
 		else
 			playSegment(null);
 		video_selector.play();
