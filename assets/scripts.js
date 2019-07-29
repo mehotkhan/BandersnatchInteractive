@@ -573,6 +573,12 @@ function playSegment(segmentId, noSeek) {
 	return false;
 }
 
+function reset() {
+	ls.clear();
+	location.hash = '';
+	location.reload();
+}
+
 var lastHash = '';
 function playHash(hash) {
 	// console.log('playHash', lastHash, '->', hash);

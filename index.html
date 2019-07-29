@@ -39,6 +39,13 @@
 	<script src="assets/bandersnatch.js"></script>
 	<script src="assets/SegmentMap.js"></script>
 	<script src="assets/scripts.js"></script>
+	<script>
+	 // keep localizable strings out of scripts.js
+	 function askReset() {
+		 if (confirm('Are you sure you want to reset all choices, breadcrumbs, and watched scenes?'))
+			 reset();
+	 }
+	</script>
 	<link rel="stylesheet" type="text/css" href="assets/styles.css">
 </head>
 
@@ -54,6 +61,8 @@
 								<a href="https://github.com/joric/bandersnatch/">Original version</a> - <a href="https://github.com/joric/">joric</a> |
 								Web page, subtitles - <a href="https://github.com/mehotkhan">Mehotkhan</a> (<a href="bitcoin:1CxaCJbh4VMNicnpktsBVfnVU5xq4QYyHW">donate</a>) |
 								Many fixes, improvements, and everything else - <a href="https://github.com/CyberShadow">CyberShadow</a>
+								<br>
+								This player remembers your choices and watch history. <a href="javascript:askReset()">Click here to reset and start from scratch.</a>
 							</p>
 						</div>
 						<input id="fileinput" type="file">
