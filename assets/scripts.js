@@ -159,16 +159,6 @@ function addItem(ul, text, url) {
 var nextChoice = -1;
 var nextSegment = null;
 
-function setNextSegment(segmentId, comment) {
-	console.log('setNextSegment', segmentId, comment);
-	nextSegment = segmentId;
-	nextChoice = -1;
-	var ul = newList("nextSegment");
-	var caption = 'nextSegment: ' + segmentId;
-	addItem(ul, comment ? caption + ' (' + comment + ')' : caption,
-		'javascript:playSegment("' + segmentId + '")');
-}
-
 function addZones(segmentId) {
 	var ul = newList("interactionZones");
 	let caption = 'currentSegment(' + segmentId + ')';
@@ -187,18 +177,14 @@ function addZones(segmentId) {
 	}
 
 	ul = newList("nextSegments");
-	let defaultSegmentId = null;
 	if (segment) {
 		for (const [k, v] of Object.entries(segment.next)) {
 			let caption = k;
-			if (segment.defaultNext == k) {
+			if (segment.defaultNext == k)
 				caption = '[' + caption + ']';
-				defaultSegmentId = k;
-			}
 			addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 		}
 	}
-	setNextSegment(defaultSegmentId);
 }
 
 var currentChoiceMoment = null;
@@ -280,8 +266,8 @@ function ontimeupdate(evt) {
 		console.log('ontimeupdate', lastSegment, '->', currentSegment, ms, msToString(ms), seeked);
 		prevSegment = lastSegment;
 		lastSegment = currentSegment;
-		if (!seeked) {
-			if (playNextSegment()) {
+		if (!seeked && prevSegment) {
+			if (playNextSegment(prevSegment)) {
 				// playSegment decided to seek, which means that this
 				// currentSegment is invalid, and a recursive
 				// ontimeupdate invocation should have taken care of
@@ -357,7 +343,8 @@ function ontimeupdate(evt) {
 		timerId = setTimeout(ontimeupdate, timeLeft);
 }
 
-function playNextSegment() {
+function playNextSegment(prevSegment) {
+	let nextSegment = null;
 	if (nextChoice >= 0) {
 		let x = currentChoiceMoment.choices[nextChoice];
 		if (x.segmentId)
@@ -367,19 +354,25 @@ function playNextSegment() {
 		else
 			nextSegment = null;
 		console.log('choice', nextChoice, 'nextSegment', nextSegment);
+		nextChoice = -1;
 		applyImpression(x.impressionData);
 	}
+
+	if (!nextSegment && prevSegment && prevSegment in segmentGroups)
+		nextSegment = resolveSegmentGroup(prevSegment);
+
+	if (!nextSegment && prevSegment && segmentMap.segments[prevSegment].defaultNext)
+		nextSegment = segmentMap.segments[prevSegment].defaultNext;
+
+	if (!nextSegment)
+		return false;
 
 	let breadcrumb = 'breadcrumb_' + nextSegment;
 	if (!(breadcrumb in ls))
 		ls[breadcrumb] = prevSegment;
 
 	segmentTransition = true;
-	let segmentId = nextSegment;
-	nextSegment = null;
-	if (segmentId)
-		return playSegment(segmentId, true);
-	return false;
+	return playSegment(nextSegment, true);
 }
 
 function jumpForward() {
@@ -397,7 +390,7 @@ function jumpForward() {
 	if (interactionMs) {
 		seek(interactionMs);
 	} else {
-		playNextSegment();
+		playNextSegment(segmentId);
 	}
 }
 
@@ -554,7 +547,7 @@ function choice(choiceIndex) {
 	nextChoice = choiceIndex;
 	newList("choices");
 	if (!currentChoiceMoment.config.disableImmediateSceneTransition)
-		playNextSegment();
+		playNextSegment(prevSegment);
 }
 
 function applyImpression(impressionData) {
