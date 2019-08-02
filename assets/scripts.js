@@ -96,10 +96,6 @@ function resolveSegmentGroup(sg) {
 		if (v.segmentGroup) {
 			results.push(resolveSegmentGroup(v.segmentGroup));
 		} else if (v.segment) {
-			// TODO: does the included precondition override or
-			// complement the segment precondition?
-			if (!checkPrecondition(v.segment))
-				continue;
 			results.push(v.segment);
 		} else {
 			if (!checkPrecondition(v))
