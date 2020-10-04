@@ -31,8 +31,6 @@ The only thing you need is 5hours video file of `Bandersnatch` episode, Drag & d
 * <kbd>←</kbd> - Jump to the previous segment
 * <kbd>Space</kbd> - Toggle play and pause
   
-## Persian user
-* if you are persian user , read this : [پلیر تعاملی ( اینتراکتیو )‌ برای قسمت جدید بلک میرور]( http://vrgl.ir/YzhCn )
 
 ## Credit
 * based on [joric work](https://github.com/joric/bandersnatch)
