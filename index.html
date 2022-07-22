@@ -40,11 +40,11 @@
 	<script src="assets/SegmentMap.js"></script>
 	<script src="assets/scripts.js"></script>
 	<script>
-	 // keep localizable strings out of scripts.js
-	 function askReset() {
-		 if (confirm('Are you sure you want to reset all choices, breadcrumbs, and watched scenes?'))
-			 reset();
-	 }
+		// keep localizable strings out of scripts.js
+		function askReset() {
+			if (confirm('Are you sure you want to reset all choices, breadcrumbs, and watched scenes?'))
+				reset();
+		}
 	</script>
 	<link rel="stylesheet" type="text/css" href="assets/styles.css">
 </head>
@@ -58,11 +58,14 @@
 						<div class="contact">
 							<p>
 								Authors:
-								<a href="https://github.com/joric/bandersnatch/">Original version</a> - <a href="https://github.com/joric/">joric</a> |
+								<a href="https://github.com/joric/bandersnatch/">Original version</a> - <a
+									href="https://github.com/joric/">joric</a> |
 								Web page, subtitles - <a href="https://github.com/mehotkhan">Mehotkhan</a> |
-								Many fixes, improvements, and everything else - <a href="https://github.com/CyberShadow">CyberShadow</a>
+								Many fixes, improvements, and everything else - <a
+									href="https://github.com/CyberShadow">CyberShadow</a>
 								<br>
-								This player remembers your choices and watch history. <a href="javascript:askReset()">Click here to reset and start from scratch.</a>
+								This player remembers your choices and watch history. <a
+									href="javascript:askReset()">Click here to reset and start from scratch.</a>
 							</p>
 						</div>
 						<input id="fileinput" type="file">
@@ -73,7 +76,8 @@
 							<ul class="file-tips">
 								<li>This player is known to work only on Google Chrome or Chromium.</li>
 								<li>Obtain the Bandersnatch video file (duration should be 5:12:14).<br>
-									Tested with <code>Black.Mirror.Bandersnatch.2018.720p.WEB-DL.x264.DUAL.mkv</code>.</li>
+									Tested with <code>Black.Mirror.Bandersnatch.2018.720p.WEB-DL.x264.DUAL.mkv</code>.
+								</li>
 								<li>Drag it on top of this box (or click here to select it).</li>
 								<li>Subtitles in many languages are available.</li>
 								<li>To change the subtitle:
@@ -83,8 +87,10 @@
 										<li>Click on the <span class="menu-item"></span> in the bottom-right</li>
 										<li>Select the desired subtitle</li>
 										<li>You can now hide the player controls in the same way as step 1-2.</li>
-									</ol></li>
-								<li>Note: do not use the "full screen" button in the video player if you enable "Show controls".
+									</ol>
+								</li>
+								<li>Note: do not use the "full screen" button in the video player if you enable "Show
+									controls".
 									Choice selection interface will not be visible if you do this.</li>
 							</ul>
 
@@ -92,7 +98,8 @@
 								<h6>Keyboard controls</h6>
 								<li><kbd>F</kbd> - Toggle fullscreen</li>
 								<li><kbd>R</kbd> - Restart video</li>
-								<li><kbd>→</kbd> / <kbd>←</kbd> - Jump to the next / previous segment (or interaction zone)</li>
+								<li><kbd>→</kbd> / <kbd>←</kbd> - Jump to the next / previous segment (or interaction
+									zone)</li>
 								<li><kbd>↑</kbd> / <kbd>↓</kbd> - Speed up / slow down playback</li>
 								<li><kbd>Space</kbd> - Toggle play and pause</li>
 							</ul>
@@ -130,9 +137,11 @@
 
 						<track label="Hungarian" kind="subtitles" srclang="hu"
 							src="subtitle/Black.Mirror.Bandersnatch.2018.720p.WEBRip.XviD.AC3-FGT-Hungarian.vtt">
-							
+
 						<track label="Korean" kind="subtitles" srclang="kr"
 							src="subtitle/[SubtitleTools.com] Black.Mirror.Bandersnatch.2018.REPACK.1080p.WEB.X264-DEFLATE.Korean.vtt">
+						<track label="German" kind="subtitles" srclang="de"
+							src="subtitle/Black.Mirror.Bandersnatch.2018.WEBRip.Netflix.German.vtt">
 					</video>
 					<div class="controls">
 						<div id="choiceCaption"></div>
