@@ -35,30 +35,35 @@ var segmentGroups = bv.segmentGroups;
 // Transation of choices
 var moments = JSON.parse(JSON.stringify(momentsBySegment));
 
-var translated_choices = ru;
+var translated_choices = en;
 
-for (var key in translated_choices) {
+function switch_choices() {
 
-	for (var i = 0; i < Object.keys(moments[key]).length; i++) {
+	for (var key in translated_choices) {
 
-		if ("choices" in moments[key][i]) {
+		for (var i = 0; i < Object.keys(moments[key]).length; i++) {
 
-			for (var k = 0; k < Object.keys(moments[key][i]["choices"]).length; k++) {
+			if ("choices" in moments[key][i]) {
 
-				if ("id" in moments[key][i]["choices"][k]) {
+				for (var k = 0; k < Object.keys(moments[key][i]["choices"]).length; k++) {
 
-					if (moments[key][i]["choices"][k]['id'] in translated_choices[key]) {
+					if ("id" in moments[key][i]["choices"][k]) {
 
-						moments[key][i]["choices"][k]['text'] = translated_choices[key][moments[key][i]["choices"][k]["id"]];
+						if (moments[key][i]["choices"][k]['id'] in translated_choices[key]) {
 
+							moments[key][i]["choices"][k]['text'] = translated_choices[key][moments[key][i]["choices"][k]["id"]];
+
+						}
 					}
 				}
 			}
 		}
 	}
+
+	return moments;
 }
 
-momentsBySegment = moments;
+// momentsBySegment = moments;
 
 // Get translations from bandersnatch.js
 

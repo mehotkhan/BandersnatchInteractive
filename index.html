@@ -38,6 +38,7 @@
 	<meta name="keywords" content="Bandersnatch,Bandersnatch Interactive Player,Interactive Player,watch," />
 	<script src="assets/bandersnatch.js"></script>
 	<script src="assets/choices/ru.js"></script>
+	<script src="assets/choices/en.js"></script>
 	<script src="assets/SegmentMap.js"></script>
 	<script src="assets/scripts.js"></script>
 	<script>
@@ -47,6 +48,7 @@
 				reset();
 		}
 	</script>
+
 	<link rel="stylesheet" type="text/css" href="assets/styles.css">
 </head>
 
@@ -57,16 +59,23 @@
 				<div id="file-selector">
 					<div class="file-area">
 						<div class="contact">
+							<div>
+								<span class="default">You can select translation of choices: </span>
+								<select id="choice-translation">
+									<option value="ru">Russian</option>
+									<option value="en" selected>English</option>
+								</select>
+								<br>
+								This player remembers your choices and watch history: <a
+								href="javascript:askReset()">Reset all</a>
+							</div>
 							<p>
 								Authors:
 								<a href="https://github.com/joric/bandersnatch/">Original version</a> - <a
 									href="https://github.com/joric/">joric</a> |
 								Web page, subtitles - <a href="https://github.com/mehotkhan">Mehotkhan</a> |
 								Many fixes, improvements, and everything else - <a
-									href="https://github.com/CyberShadow">CyberShadow</a>
-								<br>
-								This player remembers your choices and watch history. <a
-									href="javascript:askReset()">Click here to reset and start from scratch.</a>
+									href="https://github.com/CyberShadow">CyberShadow</a>						
 							</p>
 						</div>
 						<input id="fileinput" type="file">
@@ -162,5 +171,15 @@
 
 	</div>
 </body>
+
+<script>
+	var select = document.getElementById('choice-translation');
+	select.addEventListener('change',(e)=>{
+	translated_choices = window[select.value];
+	console.log(select.value);
+	// console.log(translated_choices);
+	momentsBySegment = switch_choices();
+	})
+</script>
 
 </html>
