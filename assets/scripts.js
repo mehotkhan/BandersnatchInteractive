@@ -32,6 +32,60 @@ var choicePoints = bv.choicePointNavigatorMetadata.choicePointsMetadata.choicePo
 var momentsBySegment = bv.momentsBySegment;
 var segmentGroups = bv.segmentGroups;
 
+// Transation of choices
+var moments = JSON.parse(JSON.stringify(momentsBySegment));
+
+var translated_choices = ru;
+
+for (var key in translated_choices) {
+
+	for (var i = 0; i < Object.keys(moments[key]).length; i++) {
+
+		if ("choices" in moments[key][i]) {
+
+			for (var k = 0; k < Object.keys(moments[key][i]["choices"]).length; k++) {
+
+				if ("id" in moments[key][i]["choices"][k]) {
+
+					if (moments[key][i]["choices"][k]['id'] in translated_choices[key]) {
+
+						moments[key][i]["choices"][k]['text'] = translated_choices[key][moments[key][i]["choices"][k]["id"]];
+
+					}
+				}
+			}
+		}
+	}
+}
+
+momentsBySegment = moments;
+
+// Get translations from bandersnatch.js
+
+// var translation = {};
+
+// for (var key in moments) {
+
+//     translation[key] = {};
+
+//     for (var i = 0; i < Object.keys(moments[key]).length; i++) {
+
+//         if ("choices" in moments[key][i]) {
+
+//             for (var k = 0; k < Object.keys(moments[key][i]["choices"]).length; k++) {
+
+//                 if ("id" in moments[key][i]["choices"][k]) {
+
+//                     translation[key][moments[key][i]["choices"][k]["id"]] = moments[key][i]["choices"][k]['text'];
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// console.log(moments);
+// console.log(JSON.stringify(moments).length); // 165517
+
 // Persistent state
 var ls = window.localStorage || {};
 if (!('initialized' in ls)) {
