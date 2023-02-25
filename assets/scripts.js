@@ -32,6 +32,37 @@ var choicePoints = bv.choicePointNavigatorMetadata.choicePointsMetadata.choicePo
 var momentsBySegment = bv.momentsBySegment;
 var segmentGroups = bv.segmentGroups;
 
+// Transation of choices
+var moments = JSON.parse(JSON.stringify(momentsBySegment));
+
+var translated_choices = en;
+
+function switch_choices() {
+
+	for (var key in translated_choices) {
+
+		for (var i = 0; i < Object.keys(moments[key]).length; i++) {
+
+			if ("choices" in moments[key][i]) {
+
+				for (var k = 0; k < Object.keys(moments[key][i]["choices"]).length; k++) {
+
+					if ("id" in moments[key][i]["choices"][k]) {
+
+						if (moments[key][i]["choices"][k]['id'] in translated_choices[key]) {
+
+							moments[key][i]["choices"][k]['text'] = translated_choices[key][moments[key][i]["choices"][k]["id"]];
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return moments;
+}
+
 // Persistent state
 var ls = window.localStorage || {};
 if (!('initialized' in ls)) {
