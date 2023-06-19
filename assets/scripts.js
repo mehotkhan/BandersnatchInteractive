@@ -174,23 +174,13 @@ function newList(id) {
 	return ul;
 }
 
-function addItem(ul, text, url, TheChoice) {
+function addItem(ul, text, url) {
 	var li = document.createElement("li");
 	var a = document.createElement("a");
-
-	console.log("THE CHOICE", TheChoice, TheChoice.image)
-	if (TheChoice && TheChoice.image){
-		a.style.backgroundImage = TheChoice.image.styles.backgroundImage;
-		a.style.backgroundPosition = "center center";
-		a.style.backgroundSize = "10rem";
-		a.style.backgroundRepeat = TheChoice.image.styles.backgroundRepeat;
-	}else{
-		a.textContent = text;
-	}
-		a.setAttribute('href', url);
-		li.appendChild(a);
-		ul.appendChild(li);
-	
+	a.textContent = text;
+	a.setAttribute('href', url);
+	li.appendChild(a);
+	ul.appendChild(li);
 }
 
 var nextChoice = -1;
@@ -199,7 +189,7 @@ var nextSegment = null;
 function addZones(segmentId) {
 	var ul = newList("interactionZones");
 	let caption = 'currentSegment(' + segmentId + ')';
-	addItem(ul, caption, 'javascript:playSegment("' + segmentId + '")', false);
+	addItem(ul, caption, 'javascript:playSegment("' + segmentId + '")');
 
 	var segment = segmentMap.segments[segmentId];
 	if (segment && segment.ui && segment.ui.interactionZones) {
@@ -208,7 +198,7 @@ function addZones(segmentId) {
 			var startMs = z[0];
 			var stopMs = z[1];
 			let caption = segmentId + ' interactionZone ' + index;
-			addItem(ul, caption, 'javascript:seek(' + startMs + ')', false);
+			addItem(ul, caption, 'javascript:seek(' + startMs + ')');
 			index++;
 		}
 	}
@@ -219,7 +209,7 @@ function addZones(segmentId) {
 			let caption = k;
 			if (segment.defaultNext == k)
 				caption = '[' + caption + ']';
-			addItem(ul, caption, 'javascript:playSegment("' + k + '")', false);
+			addItem(ul, caption, 'javascript:playSegment("' + k + '")');
 		}
 	}
 }
