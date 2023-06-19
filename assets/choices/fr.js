@@ -674,5 +674,13 @@ fr={
     "5VA": {
         "nsg-5V-0": "ENTERRER LE CORPS",
         "nsg-5V-1": "COUPER LE CORPS"
-    }
+    },
+    "6A": {
+        "6C": "TU AS TROUVÉ LE BON NUMERO",
+        "6D": "TU N'AS PAS TROUVÉ LE BON NUMERO"
+    },
+    "6B": {
+        "6C": "TU AS TROUVÉ LE BON NUMERO",
+        "6D": "TU N'AS PAS TROUVÉ LE BON NUMERO"
+    },
 }
