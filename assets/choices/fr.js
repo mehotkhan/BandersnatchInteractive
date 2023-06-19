@@ -8,7 +8,7 @@ fr={
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AF1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "SS20": {
@@ -20,7 +20,7 @@ fr={
         "5H": "TUER PAPA"
     },
     "SS22": {
-        "nsg-WhoThereChoice": "QUI EST L ?",
+        "nsg-WhoThereChoice": "QUI EST LÀ ?",
         "5H": "TUER PAPA"
     },
     "2Bp2": {
