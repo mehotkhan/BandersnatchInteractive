@@ -8,11 +8,11 @@ fr={
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AF1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "SS20": {
-        "R5": "VISITE DR HAYNES",
+        "R5": "ALLER VOIR LE DOCTEUR HAYNES",
         "3Nx": "REVENIR"
     },
     "SS21": {
@@ -45,7 +45,7 @@ fr={
         "3Z": "FRAPPER LE BUREAU"
     },
     "S44A": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "Z62e": {
@@ -53,7 +53,7 @@ fr={
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "S44B": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "Z62d": {
@@ -63,7 +63,7 @@ fr={
     "7D": {
         "Yeah": "OUAIS",
         "FYeah": "PUTAIN OUAIS",
-        "7L": "SAUT PAR LA FENÊTRE",
+        "7L": "SAUTER PAR LA FENÊTRE",
         "7H": "LA COMBATTRE"
     },
     "Z62c": {
@@ -95,7 +95,7 @@ fr={
         "5AJ": "LE TUER"
     },
     "SS16": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "3Vx": "REVENIR"
     },
     "SS17": {
@@ -115,7 +115,7 @@ fr={
         "3C": "CRIER SUR PAPA"
     },
     "SS19": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "3Nx": "REVENIR"
     },
     "Z62b": {
@@ -144,7 +144,7 @@ fr={
         "3Ax": "REVENIR"
     },
     "SS12": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "3Ax": "REVENIR"
     },
     "SS13": {
@@ -152,7 +152,7 @@ fr={
         "3Ax": "REVENIR"
     },
     "SS14": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "nsg-SS14-1": "REVENIR"
     },
     "SS15": {
@@ -189,7 +189,7 @@ fr={
         "nsg-1Q_rewatch": "REFUSER"
     },
     "3AH1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "S59A": {
@@ -206,7 +206,7 @@ fr={
     },
     "5A": {
         "5H": "TUER PAPA",
-        "5G": "DÉSACTIVER"
+        "5G": "SE RETENIR"
     },
     "5QA": {
         "5UA": "OUI",
@@ -217,7 +217,7 @@ fr={
         "3C": "CRIER SUR PAPA"
     },
     "8JB1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "S34A": {
@@ -245,11 +245,11 @@ fr={
         "3P": "NON"
     },
     "3L": {
-        "nsg-VisitHaynesChoice": "VISITE DR HAYNES",
+        "nsg-VisitHaynesChoice": "ALLER VOIR LE DOCTEUR HAYNES",
         "nsg-FollowColinChoice": "SUIVRE COLIN"
     },
     "3J": {
-        "nsg-VisitHaynesChoice": "VISITE DR HAYNES",
+        "nsg-VisitHaynesChoice": "ALLER VOIR LE DOCTEUR HAYNES",
         "nsg-FollowColinChoice": "SUIVRE COLIN"
     },
     "5AD": {
@@ -281,7 +281,7 @@ fr={
         "3Z": "FRAPPER LE BUREAU"
     },
     "ZK1": {
-        "8J": "JOUET",
+        "8J": "TOY",
         "nsg-PAXChoice": "PAX"
     },
     "ZK2": {
@@ -293,7 +293,7 @@ fr={
         "5AJ": "LE TUER"
     },
     "ZK3": {
-        "8J": "JOUET",
+        "8J": "TOY",
         "nsg-PACStudyChoice": "PAC"
     },
     "3VB": {
@@ -305,7 +305,7 @@ fr={
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AB1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "2Bt2": {
@@ -317,15 +317,15 @@ fr={
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AJ1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "S37A": {
-        "R2": "PRENDRE LAPIN DE PAPA",
+        "R2": "PRENDRE LAPIN DES MAINS DE PAPA",
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "S37B": {
-        "R2": "PRENDRE LAPIN DE PAPA",
+        "R2": "PRENDRE LAPIN DES MAINS DE PAPA",
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "5AD2": {
@@ -337,11 +337,11 @@ fr={
         "nsg-FlushThemChoice3X": "LES JETER DANS LES TOILETTES"
     },
     "7B": {
-        "7C": "DITES-LUI PLUS",
+        "7C": "DITES-LUI EN PLUS",
         "7D": "ARRÊTER LA CONVERSATION"
     },
     "7A": {
-        "7B": "DITES-LUI PLUS",
+        "7B": "DITES-LUI EN PLUS",
         "7B2": "ESSAYER D'EXPLIQUER"
     },
     "3Xxa": {
@@ -353,11 +353,11 @@ fr={
         "3C": "CRIER SUR PAPA"
     },
     "3AK1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "7H": {
-        "7K": "COUP DE KARATÉ A PAPA",
+        "7K": "COUP DE KARATÉ SUR PAPA",
         "7J": "COUP DE PIEDS DANS LES BURNES"
     },
     "5Q": {
@@ -365,11 +365,11 @@ fr={
         "5T": "NON"
     },
     "SS7": {
-        "R1": "PRENDRE PHOTO",
+        "R1": "PRENDRE LA PHOTO DE FAMILLE",
         "5H": "TUER PAPA"
     },
     "SS8": {
-        "R2": "PRENDRE LAPIN DE PAPA",
+        "R2": "PRENDRE LAPIN DES MAINS DE PAPA",
         "5H": "TUER PAPA"
     },
     "SS9": {
@@ -377,7 +377,7 @@ fr={
         "5H": "TUER PAPA"
     },
     "SS3": {
-        "R2": "PRENDRE LAPIN DE PAPA",
+        "R2": "PRENDRE LAPIN DES MAINS DE PAPA",
         "nsg-WhoThereChoice": "QUI EST LÀ ?"
     },
     "SS4": {
@@ -388,7 +388,7 @@ fr={
         "nsg-WhoThereChoice": "QUI EST LÀ ?"
     },
     "SS6": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "5H": "TUER PAPA"
     },
     "1GB": {
@@ -396,7 +396,7 @@ fr={
         "nsg-1Q_rewatch": "REFUSER"
     },
     "SS1": {
-        "R3": "PARLE DE MAMAN",
+        "R3": "PARLER DE MAMAN",
         "R4": "SUIVRE COLIN"
     },
     "1GA": {
@@ -408,15 +408,15 @@ fr={
         "nsg-5V-1": "COUPER LE CORPS"
     },
     "SS2": {
-        "R1": "PRENDRE PHOTO",
+        "R1": "PRENDRE LA PHOTO DE FAMILLE",
         "nsg-WhoThereChoice": "QUI EST LÀ ?"
     },
     "S36A": {
-        "R1": "PRENDRE PHOTO",
+        "R1": "PRENDRE LA PHOTO DE FAMILLE",
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "S36B": {
-        "R1": "PRENDRE PHOTO",
+        "R1": "PRENDRE LA PHOTO DE FAMILLE",
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "SS52": {
@@ -432,7 +432,7 @@ fr={
         "0cr2": "ALLER AUX CRÉDITS"
     },
     "SS55": {
-        "nsg-SS55-0": "PRENDRE PHOTO",
+        "nsg-SS55-0": "PRENDRE LA PHOTO DE FAMILLE",
         "0cr2": "ALLER AUX CRÉDITS"
     },
     "1HA": {
@@ -440,7 +440,7 @@ fr={
         "nsg-1Q_rewatch": "REFUSER"
     },
     "SS56": {
-        "nsg-SS56-0": "PRENDRE LAPIN DE PAPA",
+        "nsg-SS56-0": "PRENDRE LAPIN DES MAINS DE PAPA",
         "0cr2": "ALLER AUX CRÉDITS"
     },
     "3Vbs": {
@@ -468,7 +468,7 @@ fr={
         "3Z": "FRAPPER LE BUREAU"
     },
     "SS50": {
-        "nsg-SS50-0": "PARLE DE MAMAN",
+        "nsg-SS50-0": "PARLER DE MAMAN",
         "0cr2": "ALLER AUX CRÉDITS"
     },
     "SS51": {
@@ -476,15 +476,15 @@ fr={
         "0cr2": "ALLER AUX CRÉDITS"
     },
     "Z61e": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AD3": {
-        "8J": "JOUET",
+        "8J": "TOY",
         "nsg-PACStudyChoice": "PAC"
     },
     "Z61d": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "Z4": {
@@ -492,11 +492,11 @@ fr={
         "3Z": "FRAPPER LE BUREAU"
     },
     "Z61c": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "Z61b": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "Z1": {
@@ -504,11 +504,11 @@ fr={
         "3C": "CRIER SUR PAPA"
     },
     "Z61f": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S'",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "Z61a": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AD2": {
@@ -516,7 +516,7 @@ fr={
         "nsg-PACStudyChoice": "PAC"
     },
     "3AD1": {
-        "8J": "JOUET",
+        "8J": "TOY",
         "nsg-PAXChoice": "PAX"
     },
     "ZE": {
@@ -560,7 +560,7 @@ fr={
         "1D": "FROSTIES"
     },
     "4C1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "ZJ": {
@@ -624,7 +624,7 @@ fr={
         "0cr1": "ALLER AUX CRÉDITS"
     },
     "3AC1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "2Gt1": {
@@ -640,7 +640,7 @@ fr={
         "3Z": "FRAPPER LE BUREAU"
     },
     "3AL1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "3AL": {
@@ -668,11 +668,19 @@ fr={
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "4D1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "GLYPHE 'OURS BLANC'"
     },
     "5VA": {
         "nsg-5V-0": "ENTERRER LE CORPS",
         "nsg-5V-1": "COUPER LE CORPS"
-    }
+    },
+    "6A": {
+        "6C": "TU AS TROUVÉ LE BON NUMERO",
+        "6D": "TU N'AS PAS TROUVÉ LE BON NUMERO"
+    },
+    "6B": {
+        "6C": "TU AS TROUVÉ LE BON NUMERO",
+        "6D": "TU N'AS PAS TROUVÉ LE BON NUMERO"
+    },
 }
