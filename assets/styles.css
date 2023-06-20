@@ -313,3 +313,55 @@ h6 {
     content: '\2807';
     font-size: 2em;
 }
+
+
+/*Choice numbers part (put #6A or 6B in the URL)*/
+.buttons{
+    height: 100%;
+    margin: 0;
+}
+.buttons ul{
+    height: 100%;
+    margin: 0;
+}
+.containerCode {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+}
+
+.input-container, .buttonsCode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff7a;
+      position: relative;
+}
+.input-container span, .buttonsCode span {
+    background-color: #222222;
+    opacity: 0.9;
+    color: white;
+    width: 3.6rem;
+    height: 5rem;
+    text-align: center;
+    margin: 5px;
+    border: none;
+    font-size: 2.5rem;
+    line-height: 5rem;
+}
+
+.buttonsCode span{
+    cursor: pointer;
+}
+
+.inputField::placeholder {
+color: white;
+content: "-";
+}
+
+.buttonsCode span:hover{
+    opacity: 0.7;
+}
+
