@@ -132,7 +132,7 @@ video {
 }
 
 video::cue {
-    font: 250% sans-serif;
+    font: 100% sans-serif;
     color: white;
     background: none;
     text-shadow: 0px 0px 10px #000;
