@@ -173,23 +173,65 @@ function newList(id) {
 	}
 	return ul;
 }
-
+let selectedDigits = [];
 function addItem(ul, text, url, TheChoice) {
-	var li = document.createElement("li");
-	var a = document.createElement("a");
-
-	console.log("THE CHOICE", TheChoice, TheChoice.image)
-	if (TheChoice && TheChoice.image){
-		a.style.backgroundImage = TheChoice.image.styles.backgroundImage;
-		a.style.backgroundPosition = "center center";
-		a.style.backgroundSize = "10rem";
-		a.style.backgroundRepeat = TheChoice.image.styles.backgroundRepeat;
-	}else{
-		a.textContent = text;
-	}
+	if (TheChoice.type !== "scene:cs_bs_phone"){
+		var li = document.createElement("li");
+		var a = document.createElement("a");
+		if (TheChoice && TheChoice.image){
+			a.style.backgroundImage = TheChoice.image.styles.backgroundImage;
+			a.style.backgroundPosition = "center center";
+			a.style.backgroundSize = "10rem";
+			a.style.backgroundRepeat = TheChoice.image.styles.backgroundRepeat;
+		}else{
+			a.textContent = text;
+		}
 		a.setAttribute('href', url);
 		li.appendChild(a);
 		ul.appendChild(li);
+	}else{
+		selectedDigits = []
+		
+		// Créer le conteneur des champs de saisie
+		var inputContainer = document.createElement('div');
+		inputContainer.className = 'input-container';
+
+		// Créer les champs de saisie
+		for (var i = 0; i < 5; i++) {
+			var inputField = document.createElement('span');
+			inputField.type = 'text';
+			inputField.className = 'inputField';
+			inputContainer.appendChild(inputField);
+		}
+		
+		// Créer l'espace entre les conteneurs
+		var lineBreak = document.createElement('br');
+		inputContainer.appendChild(lineBreak.cloneNode());
+		inputContainer.appendChild(lineBreak.cloneNode());
+
+		// Créer le conteneur des boutons
+		var buttonContainer = document.createElement('div');
+		buttonContainer.className = 'buttonsCode';
+
+		// Créer les éléments de la liste des boutons
+		for (var i = 0; i < 10; i++) {
+			var listItem = document.createElement('span');
+			listItem.className = "buttonCodeNumber"
+			listItem.textContent = i;
+			listItem.setAttribute('onclick', 'selectDigit(' + i + ')');
+			buttonContainer.appendChild(listItem);
+		}
+
+		// Ajouter les conteneurs au document
+		var containerCode = document.createElement('div');
+		containerCode.className = 'containerCode';
+		containerCode.appendChild(inputContainer);
+		containerCode.appendChild(buttonContainer);
+		
+		ul.appendChild(containerCode);
+		updateInputPlaceholders();
+	}
+		
 	
 }
 
@@ -224,7 +266,52 @@ function addZones(segmentId) {
 	}
 }
 
-var currentChoiceMoment = null;
+
+function selectDigit(digit, p) {
+	if (selectedDigits.length <= 5) {
+		const emptyInputField = getEmptyInputField();
+		if (emptyInputField) {
+			emptyInputField.innerText  = digit;
+			selectedDigits.push(digit);
+		}
+
+		if (selectedDigits.length >= 5) {
+			var code = selectedDigits.join('');
+			if (code == "20541"){
+				console.log(p)
+				choice(0);
+			} else{
+				console.log(p)
+				choice(1);
+			}
+		}
+	}	
+	
+
+	updateInputPlaceholders();
+}
+
+function updateInputPlaceholders() {
+	
+	const inputFields = document.querySelectorAll('.inputField');
+	for (let i = 0; i < inputFields.length; i++) {
+		if (inputFields[i].textContent === '') {
+			inputFields[i].textContent = "-";
+		}
+	}
+}
+
+function getEmptyInputField() {
+	
+	const inputFields = document.querySelectorAll('.inputField');
+	for (let i = 0; i < inputFields.length; i++) {
+		if (inputFields[i].textContent === '-') {
+			return inputFields[i];
+		}
+	}
+	
+	return null;
+}
 
 function addChoices(r) {
 	currentChoiceMoment = r;
@@ -234,13 +321,17 @@ function addChoices(r) {
 	if (!r) return;
 
 	nextChoice = r.defaultChoiceIndex;
-
-	let index = 0;
-	for (let x of r.choices) {
-		var caption = r.defaultChoiceIndex == index ? '[' + x.text + ']' : x.text;
-		addItem(ul, caption, 'javascript:choice(' + index + ')', x);
-		index++;
+	if (r.type == "scene:cs_bs_phone"){
+		addItem(ul, "", "", r);
+	}else{
+		let index = 0;
+		for (let x of r.choices) {
+			var caption = r.defaultChoiceIndex == index ? '[' + x.text + ']' : x.text;
+			addItem(ul, caption, 'javascript:choice(' + index + ')', r);
+			index++;
+		}
 	}
+	
 
 	if (r.id in choicePoints)
 		document.getElementById("choiceCaption").innerHTML = choicePoints[r.id].description;
@@ -502,7 +593,6 @@ function togglePlayPause() {
 	if (v.paused) v.play();
 	else v.pause();
 }
-
 window.onload = function() {
 	var video_selector = document.getElementById("video");
 	var video_source_selector = document.getElementById("video-source");
