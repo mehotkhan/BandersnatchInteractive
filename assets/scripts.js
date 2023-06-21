@@ -327,7 +327,7 @@ function addChoices(r) {
 		let index = 0;
 		for (let x of r.choices) {
 			var caption = r.defaultChoiceIndex == index ? '[' + x.text + ']' : x.text;
-			addItem(ul, caption, 'javascript:choice(' + index + ')', r);
+			addItem(ul, caption, 'javascript:choice(' + index + ')', x);
 			index++;
 		}
 	}
