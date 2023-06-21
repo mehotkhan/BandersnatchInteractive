@@ -267,7 +267,7 @@ function addZones(segmentId) {
 }
 
 
-function selectDigit(digit, p) {
+function selectDigit(digit) {
 	if (selectedDigits.length <= 5) {
 		const emptyInputField = getEmptyInputField();
 		if (emptyInputField) {
@@ -278,10 +278,8 @@ function selectDigit(digit, p) {
 		if (selectedDigits.length >= 5) {
 			var code = selectedDigits.join('');
 			if (code == "20541"){
-				console.log(p)
 				choice(0);
 			} else{
-				console.log(p)
 				choice(1);
 			}
 		}
