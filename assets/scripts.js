@@ -267,7 +267,7 @@ function addZones(segmentId) {
 }
 
 
-function selectDigit(digit, p) {
+function selectDigit(digit) {
 	if (selectedDigits.length <= 5) {
 		const emptyInputField = getEmptyInputField();
 		if (emptyInputField) {
@@ -278,10 +278,8 @@ function selectDigit(digit, p) {
 		if (selectedDigits.length >= 5) {
 			var code = selectedDigits.join('');
 			if (code == "20541"){
-				console.log(p)
 				choice(0);
 			} else{
-				console.log(p)
 				choice(1);
 			}
 		}
@@ -327,7 +325,7 @@ function addChoices(r) {
 		let index = 0;
 		for (let x of r.choices) {
 			var caption = r.defaultChoiceIndex == index ? '[' + x.text + ']' : x.text;
-			addItem(ul, caption, 'javascript:choice(' + index + ')', r);
+			addItem(ul, caption, 'javascript:choice(' + index + ')', x);
 			index++;
 		}
 	}

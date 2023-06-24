@@ -8,7 +8,7 @@ en={
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "3AF1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "SS20": {
@@ -185,7 +185,7 @@ en={
         "nsg-1Q_rewatch": "REFUSE"
     },
     "3AH1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "S59A": {
@@ -213,7 +213,7 @@ en={
         "3C": "SHOUT AT DAD"
     },
     "8JB1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "S34A": {
@@ -301,7 +301,7 @@ en={
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "3AB1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "2Bt2": {
@@ -312,7 +312,7 @@ en={
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "3AJ1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "S37A": {
@@ -348,7 +348,7 @@ en={
         "3C": "SHOUT AT DAD"
     },
     "3AK1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "7H": {
@@ -471,7 +471,7 @@ en={
         "0cr2": "EXIT TO CREDITS"
     },
     "Z61e": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "3AD3": {
@@ -479,7 +479,7 @@ en={
         "nsg-PACStudyChoice": "PAC"
     },
     "Z61d": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "Z4": {
@@ -487,11 +487,11 @@ en={
         "3Z": "HIT DESK"
     },
     "Z61c": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "Z61b": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "Z1": {
@@ -499,11 +499,11 @@ en={
         "3C": "SHOUT AT DAD"
     },
     "Z61f": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "Z61a": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "3AD2": {
@@ -555,7 +555,7 @@ en={
         "1D": "FROSTIES"
     },
     "4C1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "ZJ": {
@@ -619,7 +619,7 @@ en={
         "0cr1": "EXIT TO CREDITS"
     },
     "3AC1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "2Gt1": {
@@ -635,7 +635,7 @@ en={
         "3Z": "HIT DESK"
     },
     "3AL1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "3AL": {
@@ -663,7 +663,7 @@ en={
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "4D1": {
-        "nsg-LettersPACSChoice": "PACS",
+        "nsg-LettersPACSChoice": "P.A.C.S.",
         "nsg-WhiteBearChoice": "'WHITE BEAR' GLYPH"
     },
     "5VA": {

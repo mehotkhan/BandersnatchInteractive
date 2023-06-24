@@ -4043,7 +4043,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -6808,7 +6808,7 @@ bandersnatch={
                         "backgroundRepeat": "no-repeat"
                       }
                     },
-                    "text": "PACS"
+                    "text": "P.A.C.S."
                   },
                   {
                     "id": "nsg-WhiteBearChoice",
@@ -7220,7 +7220,7 @@ bandersnatch={
                         "backgroundRepeat": "no-repeat"
                       }
                     },
-                    "text": "PACS"
+                    "text": "P.A.C.S."
                   },
                   {
                     "id": "nsg-WhiteBearChoice",
@@ -8486,7 +8486,7 @@ bandersnatch={
                         "backgroundRepeat": "no-repeat"
                       }
                     },
-                    "text": "PACS"
+                    "text": "P.A.C.S."
                   },
                   {
                     "id": "nsg-WhiteBearChoice",
@@ -8654,7 +8654,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -9091,7 +9091,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -11164,7 +11164,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -11312,7 +11312,7 @@ bandersnatch={
                         "backgroundRepeat": "no-repeat"
                       }
                     },
-                    "text": "PACS"
+                    "text": "P.A.C.S."
                   },
                   {
                     "id": "nsg-WhiteBearChoice",
@@ -11437,7 +11437,7 @@ bandersnatch={
                         "backgroundRepeat": "no-repeat"
                       }
                     },
-                    "text": "PACS"
+                    "text": "P.A.C.S."
                   },
                   {
                     "id": "nsg-WhiteBearChoice",
@@ -11491,7 +11491,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -11600,7 +11600,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -11653,7 +11653,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -12385,7 +12385,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -13236,7 +13236,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -13471,7 +13471,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
@@ -13930,7 +13930,7 @@ bandersnatch={
                       "backgroundRepeat": "no-repeat"
                     }
                   },
-                  "text": "PACS"
+                  "text": "P.A.C.S."
                 },
                 {
                   "id": "nsg-WhiteBearChoice",
